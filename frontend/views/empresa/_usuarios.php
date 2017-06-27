@@ -1,3 +1,8 @@
+<?php 
+use yii\bootstrap\Html;
+?>
+
+<div class="col-md-4 col-sm-6">
 <div class="text-center card-box">
     <div class="member-card">
         <div class="thumb-xl member-thumb m-b-10 center-block">
@@ -13,12 +18,12 @@
         <?= Html::a('Eliminar', ['delete'], ['class' => 'btn btn-danger btn-sm w-sm waves-effect m-t-10 waves-light']) ?>
 
         <div class="text-left m-t-40">
-            <p class="text-muted font-13"><strong>Nombre :</strong> <span class="m-l-15"><?= $model->emp_nombre ?></span></p>
-            <p class="text-muted font-13"><strong>Direccion :</strong><span class="m-l-15"><?= $model->emp_direccion; ?></span></p>
-            <p class="text-muted font-13"><strong>Email :</strong> <span class="m-l-15">coderthemes@gmail.com</span></p>
+            <p class="text-muted font-13"><strong>Nombre :</strong> <span class="m-l-15"><?= $model->usu_nombre ?></span></p>
+            <p class="text-muted font-13"><strong>Direccion :</strong><span class="m-l-15"><?= $model->usu_direccion; ?></span></p>
+            <p class="text-muted font-13"><strong>Email :</strong> <span class="m-l-15"><?= $model->usu_email; ?></span></p>
             <p class="text-muted font-13"><strong>Region :</strong> <span class="m-l-15">USA</span></p>
             <p class="text-muted font-13"><strong>Ciudad :</strong> <span class="m-l-15">USA</span></p>
-            <p class="text-muted font-13"><strong>Fecha Creacion :</strong> <span class="m-l-15"><?= $model->emp_fechacreacion; ?></span></p>
+            <p class="text-muted font-13"><strong>Fecha Creacion :</strong> <span class="m-l-15"><?= $model->usu_fechacreacion; ?></span></p>
         </div>
 
         <ul class="social-links list-inline m-t-30">
@@ -34,3 +39,4 @@
         </ul>
     </div>
 </div> <!-- end card-box -->
+</div>

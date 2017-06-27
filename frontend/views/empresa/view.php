@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ListView;
 use yii\bootstrap\ActiveForm;
 use yii\widgets\Pjax;
+use yii\helpers\Url;
 
 $this->title = $model->emp_id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Empresas'), 'url' => ['index']];
@@ -55,15 +56,20 @@ $this->params['tittle'] = 'Empresa';
             <h4 class="m-t-0 m-b-20 header-title">PLAN <small><?= $plan->plan_nombre ?></small></h4>
             <div class="p-b-10">
                 <p>Usuarios <small></small></p>
+                <?php Pjax::begin(['id' => 'usuario-count']) ?>
                 <div class="progress progress-sm">
                     <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="<?= $usuarios->getCount(); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= (($usuarios->getCount() * 100) / $plan->plan_usuarios) ?>%">
                     </div>
                 </div>
+                <?php Pjax::end(); ?>
+
                 <p>Modulos <small></small></p>
+                <?php Pjax::begin(['id' => 'modulo-count']) ?>
                 <div class="progress progress-sm">
                     <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="<?= $modulos->getCount(); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= (($modulos->getCount() * 100) / $plan->plan_usuarios) ?>%">
                     </div>
                 </div>
+                <?php Pjax::end(); ?>
             </div>
         </div>
     </div> <!-- end col -->
@@ -78,40 +84,45 @@ $this->params['tittle'] = 'Empresa';
                             <span class="hidden-xs">USUARIOS</span>
                         </a>
                     </li>
-                    
+
                     <li>
                         <a href="#departamentos" data-toggle="tab" aria-expanded="false">
                             <span class="visible-xs"><i class="fa fa-photo"></i></span>
                             <span class="hidden-xs">DEPARTAMENTOS</span>
                         </a>
                     </li>
-                    
+
                     <li>
                         <a href="#modulos" data-toggle="tab" aria-expanded="false">
                             <span class="visible-xs"><i class="fa fa-photo"></i></span>
                             <span class="hidden-xs">MODULOS</span>
                         </a>
                     </li>
-                    
+
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="usuarios">
-                        <div class="clearfix">
-                            <div class="pull-left">
-                                <h1 class="text-right"><i class="md md-equalizer text-pink"></i> Usuarios Empresa</h1>
+                        <div class="row">
+                            <div class="clearfix">
+                                <div class="pull-left">
+                                    <h1 class="text-right"><i class="md md-equalizer text-pink"></i> Usuarios Empresa</h1>
+                                </div>
+                                <div class="pull-right">
+                                    <?= yii\bootstrap\Html::a('Nuevo', "#usuario-modal", ['id' => 'usuario', 'data-overlaySpeed' => "100", 'data-overlayColor' => "#36404a", 'data-plugin' => "custommodal", 'data-animation' => 'fadein', 'class' => 'btn btn-primary waves-effect waves-light']); ?>
+                                </div>
                             </div>
-                            <div class="pull-right">
-                                <?= yii\bootstrap\Html::a('Nuevo',"#custom-modal",['id'=>'usuario','data-overlaySpeed'=>"100", 'data-overlayColor'=>"#36404a",'data-plugin'=>"custommodal",'data-animation'=>'fadein', 'class'=>'btn btn-primary waves-effect waves-light']);?>
-                            </div>
+                            <hr>
+                            <?php Pjax::begin(['id' => 'usuario-list']) ?>
+                            <?php
+                            echo ListView::widget([
+                                'dataProvider' => $usuarios,
+                                'itemView' => '_usuarios',
+                            ]);
+                            ?>
+<?php Pjax::end() ?>
                         </div>
-                        <hr>
-                        <?php
-                        echo ListView::widget( [
-                            'dataProvider' => $usuarios,
-                            'itemView' => '_usuarios',
-                        ] ); ?>
                     </div>
-                    
+
                     <div class="tab-pane" id="departamentos">
                         <div class="row">
 
@@ -120,7 +131,7 @@ $this->params['tittle'] = 'Empresa';
                                     <h1 class="text-right"><i class="md md-equalizer text-pink"></i> Departamentos Empresa</h1>
                                 </div>
                                 <div class="pull-right">
-                                    <?= yii\bootstrap\Html::a('Nuevo', "#departamento-modal", ['id' => 'usuario', 'data-overlaySpeed' => "100", 'data-overlayColor' => "#36404a", 'data-plugin' => "custommodal", 'data-animation' => 'fadein', 'class' => 'btn btn-primary waves-effect waves-light']); ?>
+<?= yii\bootstrap\Html::a('Nuevo', "#departamento-modal", ['id' => 'usuario', 'data-overlaySpeed' => "100", 'data-overlayColor' => "#36404a", 'data-plugin' => "custommodal", 'data-animation' => 'fadein', 'class' => 'btn btn-primary waves-effect waves-light']); ?>
                                 </div>
                             </div>
                             <hr>
@@ -131,26 +142,31 @@ $this->params['tittle'] = 'Empresa';
                                 'itemView' => '_departamentos',
                             ]);
                             ?>
-                            <?php Pjax::end() ?>
+<?php Pjax::end() ?>
 
                         </div>
                     </div>
-                    
+
                     <div class="tab-pane" id="modulos">
-                        <div class="clearfix">
-                            <div class="pull-left">
-                                <h1 class="text-right"><i class="md md-equalizer text-pink"></i> Modulos Empresa</h1>
+                        <div class="row">
+                            <div class="clearfix">
+                                <div class="pull-left">
+                                    <h1 class="text-right"><i class="md md-equalizer text-pink"></i> Modulos Empresa</h1>
+                                </div>
+                                <div class="pull-right">
+                                <?= yii\bootstrap\Html::a('Nuevos',false, ['id' => 'modulo-create','class' => 'btn btn-primary waves-effect waves-light']); ?>
+                                </div>
                             </div>
-                            <div class="pull-right">
-                                <?= yii\bootstrap\Html::a('Nuevo',"#modulo-modal",['id'=>'usuario','data-overlaySpeed'=>"100", 'data-overlayColor'=>"#36404a",'data-plugin'=>"custommodal",'data-animation'=>'fadein', 'class'=>'btn btn-primary waves-effect waves-light']);?>
-                            </div>
+                            <hr>
+                            <?php Pjax::begin(['id' => 'modulo-list']) ?>
+                            <?php
+                            echo ListView::widget([
+                                'dataProvider' => $modulos,
+                                'itemView' => '_modulos',
+                            ]);
+                            ?>
+                            <?php Pjax::end() ?>
                         </div>
-                        <hr>
-                        <?php
-                        echo ListView::widget( [
-                            'dataProvider' => $modulos,
-                            'itemView' => '_modulos',
-                        ] ); ?>
                     </div>
                 </div>
             </div>
@@ -158,62 +174,156 @@ $this->params['tittle'] = 'Empresa';
     </div>
 </div>
 
-<!-- Custom Modal -->
-<div id="custom-modal" class="modal-demo">
+<!-- Usuario Modal -->
+<div id="usuario-modal" class="modal-demo">
     <button type="button" class="close" onclick="Custombox.close();">
         <span>&times;</span><span class="sr-only">Close</span>
     </button>
     <h4 class="custom-modal-title">Usuario Nuevo</h4>
-    
+
     <div class="custom-modal-text">
-        <?php 
+        <?php
         $user = new \app\models\Usuario();
-        $form = ActiveForm::begin(['id'=>'user-form','layout' => 'horizontal',
-            'enableClientValidation'=>false]); ?>
+        $user->emp_id = $model->emp_id;
 
-        <?= $form->field($user, 'usu_nombre')->textInput(['maxlength' => true]) ?>
+        echo $this->render('_formUsuario', ['user' => $user]);
+        ?>
 
-        <?= $form->field($user, 'usu_apellido')->textInput(['maxlength' => true]) ?>
-
-        <?= $form->field($user, 'usu_email')->textInput(['maxlength' => true]) ?>
-
-        <?= $form->field($user, 'usu_cargo')->textInput(['maxlength' => true]) ?>
-
-        <?= $form->field($user, 'dep_id')->textInput(['maxlength' => true]) ?>
-
-    <div class="modal-footer">
-        <?= Html::submitButton('Guardar', ['class' => 'btn btn-primary']) ?>
-    </div>
-    <?php ActiveForm::end(); ?>
     </div>
 </div>
 
-<!-- Custom Modal -->
+<!-- Usuario Modal -->
+<div id="modulo-modal" class="modal-demo">
+    <button type="button" class="close" onclick="Custombox.close();">
+        <span>&times;</span><span class="sr-only">Close</span>
+    </button>
+    <h4 class="custom-modal-title badge-info" >Modulo Nuevo</h4>
+    <div class="custom-modal-text">
+        <div class="modulo-form">
+            <?php
+           /* $mod = new \app\models\Modulo();
+            $mod->emp_id = $model->emp_id;
+            $registros = array();
+            $reg = new \app\models\ModuloRegistro();
+            $registros[] = $reg;
+            echo $this->render('_formModulo', ['mod' => $mod,'registros'=>$registros]);*/
+            ?>
+        </div>
+    </div>
+
+</div>
+
+<!-- Departamento Modal -->
 <div id="departamento-modal" class="modal-demo">
     <button type="button" class="close" onclick="Custombox.close();">
         <span>&times;</span><span class="sr-only">Close</span>
     </button>
     <h4 class="custom-modal-title badge-info">Departamento Nuevo</h4>
-    
+
     <div class="custom-modal-text">
-        <?php 
+        <?php
         $dep = new \app\models\Departamento();
         $dep->emp_id = $model->emp_id;
-        
-        echo $this->render('_formDepartamento',['dep'=>$dep]);
+
+        echo $this->render('_formDepartamento', ['dep' => $dep]);
         ?>
     </div>
 </div>
 
 
 <?php
-
-$this->registerJsFile(Yii::getAlias('@web').'/plugins/custombox/dist/custombox.min.js', ['depends' => [yii\web\JqueryAsset::className()]]);
-$this->registerJsFile(Yii::getAlias('@web').'/plugins/custombox/dist/legacy.min.js', ['depends' => [yii\web\JqueryAsset::className()]]);
-$this->registerCssFile(Yii::getAlias('@web').'/plugins/custombox/dist/custombox.min.css', ['depends' => [yii\web\JqueryAsset::className()]]);
-
+$this->registerJsFile(Yii::getAlias('@web') . '/plugins/custombox/dist/custombox.min.js', ['depends' => [yii\web\JqueryAsset::className()]]);
+$this->registerJsFile(Yii::getAlias('@web') . '/plugins/custombox/dist/legacy.min.js', ['depends' => [yii\web\JqueryAsset::className()]]);
+$this->registerCssFile(Yii::getAlias('@web') . '/plugins/custombox/dist/custombox.min.css', ['depends' => [yii\web\JqueryAsset::className()]]);
 ?>
 
+<?php
+$urlDeleteModulo  = \yii\helpers\Json::htmlEncode(Url::to(['empresa/deletemodulo']));
+$urlUpdateModulo  = \yii\helpers\Json::htmlEncode(Url::to(['modulo/update']));
+$urlNewModulo    = \yii\helpers\Json::htmlEncode(Url::to(['modulo/create']));
+$this->registerJs(<<<JS
+    $("#modulos").on("click","a#modulo-create",function(e){
+        
+        console.log('entro');
+        $.ajax({
+            url: $urlNewModulo,
+            type:'get',
+            dataType:'json',
+            data: {emp_id:$model->emp_id},
+            beforeSend:function(){
+                $("#modulo-modal .modulo-form").html("");                
+                Custombox.open({
+                    target: "#modulo-modal",
+                    effect: "fadein",
+                    overlaySpeed: "100",
+                    overlayColor: "#36404a"
+                });
+                $("#modulo-modal .modulo-form").before('<div id="loading">Cargando...</div>');
+            },
+            success:function(resp){
+                $("#modulo-modal .modulo-form").html(resp.div);
+            },complete:function(jqXHR, textStatus){
+                $("#loading").remove();
+            }
+        });
+        return false;
+    });
 
+    $("#modulo-list").on("click","a.modulo-eliminar",function(e){
+        var id= $(this).attr("data-id");    
+        $.ajax({
+            url: $urlDeleteModulo,
+            type:'post',
+            dataType:'json',
+            data:{id:id},
+            beforeSend:function(){
 
+            },
+            success:function(resp){
+        
+            },complete:function(jqXHR, textStatus){
+               if(jqXHR.responseJSON.status == 'success'){
+                   $.pjax.reload({container: '#modulo-count', async: false});
+                   $.pjax.reload({container: '#modulo-list', async: false});
+                   swal({ title: "Modulo", text: "modulo eliminado con exito.", type: "success" });
+               }
+            }
+        });
+        return false;
+    });
+        
+    $("#modulo-list").on("click","a.modulo-editar",function(e){
+        var id= $(this).attr("data-id");    
+        $.ajax({
+            url: $urlUpdateModulo,
+            type:'get',
+            dataType:'json',
+            data:{id:id},
+            error:function(){
+                $("#modulo-modal .modulo-form").html('<div class="alert alert-danger"><strong>Error!</strong> Algo ocurrio al cargar el formulario.</div>');
+            },
+            beforeSend:function(){
+                $("#modulo-modal .modulo-form").html("");
+                
+                Custombox.open({
+                    target: "#modulo-modal",
+                    effect: "fadein",
+                    overlaySpeed: "100",
+                    overlayColor: "#36404a"
+                });
+                $("#modulo-modal .modulo-form").before('<div id="loading">Cargando...</div>');
+                
+            },
+            success:function(resp){
+                $("#modulo-modal .modulo-form").html(resp.div);
+            },complete:function(jqXHR, textStatus){
+                $("#loading").remove();
+            }
+        });
+        return false;
+    });
+        
+JS
+   );
+?>
 

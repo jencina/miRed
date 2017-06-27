@@ -59,7 +59,7 @@ class EmpresaController extends Controller
         ]);
         
         $modulos = new ActiveDataProvider([
-            'query' => \app\models\Modulo::find()->where(['emp_id'=>$id]),
+            'query' => \app\models\Modulo::find()->where(['emp_id'=>$id,'mod_activo'=>1]),
         ]);
         
         $departamentos = new ActiveDataProvider([
@@ -171,7 +171,135 @@ class EmpresaController extends Controller
                    'div'=> $this->renderAjax('_formDepartamento',['dep'=>$model])
                ]);
                exit;
+            }
+        }  
+    }
+    
+     public function actionCreateusuario() {
+        if(Yii::$app->request->isAjax)
+        {
+           $model = new \app\models\Usuario();
+           if($model->load(Yii::$app->request->post())){
+               $model->usu_fechacreacion     = date("Y-m-d h:i:s");
+               $model->usu_fechamodificacion = date("Y-m-d h:i:s");
+               $model->usu_status            = 0;
+               $model->usu_password_hash     = Yii::$app->security->generatePasswordHash($model->usu_password_hash);
+               $model->usu_auth_key          = Yii::$app->security->generateRandomString();
+               
+               if($model->save()){
+                    echo json_encode([
+                        'status'=>'true'
+                    ]);
+                    exit;
+               }
+               
+               echo json_encode([
+                   'status'=>'false',
+                   'div'=> $this->renderAjax('_formUsuario',['user'=>$model])
+               ]);
+               exit;
            }
         }  
+    }
+    
+    public function actionAddreg(){
+        if(Yii::$app->request->isAjax)
+        {
+            $i = Yii::$app->request->post('i');
+            $reg = new \app\models\ModuloRegistro();
+            $form = new \yii\bootstrap\ActiveForm();
+            
+            $i++;
+            echo json_encode([
+                'status'=>'success',
+                'div' => $this->renderAjax('_formModuloRegistro', ['reg'=>$reg,'i'=>$i,'form'=>$form])
+            ]);
+        }
+    }
+    
+    public function actionCreatemodulo() {
+        if(Yii::$app->request->isAjax)
+        {
+           $model     = new \app\models\Modulo();
+           $registros = array(); 
+           $save      = true;
+           if($model->load(Yii::$app->request->post())){
+               
+               $model->mod_fechacreacion     = date("Y-m-d h:i:s");
+               $model->mod_fechamodificacion = date("Y-m-d h:i:s");
+               $model->mod_activo            = 1;
+               
+               foreach (Yii::$app->request->post('ModuloRegistro') as $index => $reg){
+                   $registro = new \app\models\ModuloRegistro();
+                   $post['ModuloRegistro']= $reg;
+                   $registro->load($post);
+                   //$save  = $save && $registro->validate(); 
+                   if(!$registro->validate()){
+                       $save = false;
+                   }
+                   $registros[] = $registro;
+               }
+
+               if(!$model->validate()){
+                    $save = false;
+               }
+
+               if($save){
+                    if($model->save()){
+                        foreach ($registros as $reg){
+                            $reg->mod_reg_mod_id            = $model->mod_id;
+                            $reg->mod_reg_fechacreacion     = date("Y-m-d h:i:s");
+                            $reg->mod_reg_fechamodificacion = date("Y-m-d h:i:s");
+                            $reg->insert();
+                        }
+                        
+                        echo json_encode([
+                            'status'=>'true'
+                        ]);
+                        exit;
+                    }
+               }
+              
+               echo json_encode([
+                   'status'=>'false',
+                   'div'=> $this->renderAjax('_formModulo',['mod'=>$model,'registros'=>$registros])
+               ]);
+               exit;
+            }
+        }  
+    }
+    
+    public function actionDeletemodulo(){
+        if(Yii::$app->request->isAjax)
+        {
+            $id = Yii::$app->request->post('id');
+            $modulo = \app\models\Modulo::findOne(['mod_id'=>$id]);
+            $modulo->mod_activo = 0;
+            $modulo->update();
+             echo json_encode([
+                   'status'=>'success'
+            ]);
+            exit;
+            
+        }
+    }
+    
+    public function actionUpdatemodulo(){
+        if(Yii::$app->request->isAjax)
+        {
+            $id = Yii::$app->request->get('id');
+            $model = \app\models\Modulo::findOne(['mod_id'=>$id]);
+            
+            if($model->load(Yii::$app->request->post())){
+                
+                
+            }
+            
+            echo json_encode([
+                'status'=>'success',
+                'div'=> $this->renderAjax('_formModulo',['mod'=>$model,'registros'=>$model->moduloRegistros])
+            ]);
+            exit;
+        }
     }
 }

@@ -26,15 +26,14 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'signup'],
+                //'only' => ['logout', 'signup'],
                 'rules' => [
                     [
-                        'actions' => ['signup'],
-                        'allow' => true,
-                        'roles' => ['?'],
+                        'actions' => ['index','signup','login'],
+                        'allow' => true
                     ],
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout','gotoback'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -66,9 +65,9 @@ class SiteController extends Controller
     }
     
     public function init() {
-         if (!Yii::$app->user->isGuest) {
-                 return Yii::$app->getResponse()->redirect(['admin/index']);
-             }
+        if (!Yii::$app->user->isGuest) {
+                //return Yii::$app->getResponse()->redirect(['admin/index']);
+        }
     }
 
     
@@ -89,17 +88,25 @@ class SiteController extends Controller
      *
      * @return mixed
      */
+    
+    public function actionGotoback(){
+        return $this->goBack();
+    }
+    
     public function actionLogin()
     {
         $this->layout = 'main-login';
         
         if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+            //return $this->goHome();
+            return Yii::$app->getResponse()->redirect(['admin/index']);
+            //return $this->goBack();
         }
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            return Yii::$app->getResponse()->redirect(['admin/index']);
+            //return $this->goBack();
         } else {
             return $this->render('login', [
                 'model' => $model,

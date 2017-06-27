@@ -62,12 +62,18 @@ echo '</div>';
 echo '</div>';  
 echo '<div class="form-group m-t-30">';
 echo '<div class="col-sm-7">';
-echo Html::a('reset it', ['site/request-password-reset'],['class'=>'text-muted']);
+echo Html::a('Olvidate tu contraseña?', ['site/request-password-reset'],['class'=>'text-muted']);
 echo '</div>';
 echo '<div class="col-sm-5 text-right">';
-echo Html::a('Create an account',['site/signup'],['class'=>'text-muted']);
+echo Html::a('Crear cuenta',['site/signup'],['class'=>'text-muted']);
 echo '</div>';
 echo '</div>';
 ActiveForm::end(); 
 ?>
+
+<div class="col-md-12">
+    <div class="row">
+         <?= \yii\bootstrap\Html::a('Mi Red','http://localhost/advanced/backend/web',['class'=>'btn btn-block btn--md btn-pink waves-effect waves-light']);?>
+    </div>
+</div>
 

@@ -27,6 +27,17 @@ class Modulo extends \yii\db\ActiveRecord
     {
         return 'modulo';
     }
+    
+    const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
+
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_CREATE] = ['create'];
+        $scenarios[self::SCENARIO_UPDATE] = ['update'];
+        return $scenarios;
+    }
 
     /**
      * @inheritdoc
@@ -37,7 +48,7 @@ class Modulo extends \yii\db\ActiveRecord
             [['mod_descripcion'], 'string'],
             [['mod_activo', 'emp_id'], 'integer'],
             [['mod_fechacreacion', 'mod_fechamodificacion'], 'safe'],
-            [['emp_id'], 'required'],
+            [['mod_nombre','mod_descripcion','emp_id'], 'required'],
             [['mod_nombre'], 'string', 'max' => 100],
             [['emp_id'], 'exist', 'skipOnError' => true, 'targetClass' => Empresa::className(), 'targetAttribute' => ['emp_id' => 'emp_id']],
         ];
@@ -50,12 +61,12 @@ class Modulo extends \yii\db\ActiveRecord
     {
         return [
             'mod_id' => Yii::t('app', 'Mod ID'),
-            'mod_nombre' => Yii::t('app', 'Mod Nombre'),
-            'mod_descripcion' => Yii::t('app', 'Mod Descripcion'),
-            'mod_activo' => Yii::t('app', 'Mod Activo'),
-            'mod_fechacreacion' => Yii::t('app', 'Mod Fechacreacion'),
-            'mod_fechamodificacion' => Yii::t('app', 'Mod Fechamodificacion'),
-            'emp_id' => Yii::t('app', 'Emp ID'),
+            'mod_nombre' => Yii::t('app', 'Nombre'),
+            'mod_descripcion' => Yii::t('app', 'Descripcion'),
+            'mod_activo' => Yii::t('app', 'Activo'),
+            'mod_fechacreacion' => Yii::t('app', 'Fechacreacion'),
+            'mod_fechamodificacion' => Yii::t('app', 'Fechamodificacion'),
+            'emp_id' => Yii::t('app', 'Empresa'),
         ];
     }
 

@@ -133,12 +133,25 @@ AdminAsset::register($this);
                                                 <small><b>See all notifications</b></small>
                                             </a>
                                         </li>
-
                                     </ul>
                                 </li>
                                 <li class="hidden-xs">
                                     <a href="#" class="right-bar-toggle waves-effect waves-light"><i
                                             class="md md-settings"></i></a>
+                                </li>
+                                <li>
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle waves-effect profile" data-toggle="dropdown"
+                                           role="button" aria-haspopup="true" aria-expanded="false">
+                                            <img  src="<?= Yii::getAlias('@web'); ?>/admin-theme/images/users/avatar-2.jpg" alt="user-img" class="img-circle">
+                                            <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">Mi Perfil</a></li>
+                                            <li>
+                                                <?= \yii\bootstrap\Html::a('Salir',['site/logout'],['data-method'=>'post'])?>
+                                            </li>
+                                        </ul>
+                                    </li>
                                 </li>
 
                             </ul>
@@ -160,8 +173,6 @@ AdminAsset::register($this);
                                         ['label'=>'MAIN','options'=> ['class'=>'menu-title']],
                                         ['label' => '<i class="ti-home"></i><span>'.Yii::t('app', 'Home').'</span>','icon'=>'fa-home','options'=> ['class'=>'has-sub'], 'url' => ['/admin/index']],
                                         ['label' => '<i class="fa fa-building-o"></i><span> Empresa</span>','options'=> ['class'=>'has-sub'], 'url' => ['/empresa/index']],
-                                        ['label' => '<i class="ti-user"></i><span> Usuarios</span>','options'=> ['class'=>'has-sub'], 'url' => ['/usuario/index']],
-
                                         ],
                                     'submenuTemplate' => "\n<ul class='submenu'>\n{items}\n</ul>\n",
                                     'encodeLabels' => false, //allows you to use html in labels
@@ -174,7 +185,7 @@ AdminAsset::register($this);
                 <div class="user-detail">
                     <div class="dropup">
                         <a href="" class="dropdown-toggle profile" data-toggle="dropdown" aria-expanded="true">
-                            <img  src="assets/images/users/avatar-2.jpg" alt="user-img" class="img-circle">
+                            <img  src="<?= Yii::getAlias('@web'); ?>/admin-theme/images/users/avatar-2.jpg" alt="user-img" class="img-circle">
                             <span class="user-info-span">
                                 <h5 class="m-t-0 m-b-0">John Deo</h5>
                                 <p class="text-muted m-b-0">
@@ -182,13 +193,6 @@ AdminAsset::register($this);
                                 </p>
                             </span>
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a href="javascript:void(0)"><i class="md md-face-unlock"></i> Profile</a></li>
-                            <li><a href="javascript:void(0)"><i class="md md-settings"></i> Settings</a></li>
-                            <li><a href="javascript:void(0)"><i class="md md-lock"></i> Lock screen</a></li>
-                            <li><a href="javascript:void(0)"><i class="md md-settings-power"></i> Logout</a></li>
-                        </ul>
-
                     </div>
                 </div>
             </div>
@@ -235,3 +239,4 @@ AdminAsset::register($this);
 </body>
 </html>
 <?php $this->endPage() ?>
+
