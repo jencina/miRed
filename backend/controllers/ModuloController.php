@@ -79,4 +79,27 @@ class ModuloController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+    
+    public function actionCreatecomentario(){
+        $model = new \backend\models\ModuloPostComentario();
+        if($model->load(Yii::$app->request->post())){
+            $model->com_fechacreacion     = date("Y-m-d H:i:s");
+            $model->com_fechamodificacion = date("Y-m-d H:i:s");
+            $model->com_usuario_id        = Yii::$app->user->id;
+            $model->save();
+            
+        }
+        
+    }
+    
+    public function actionAgregarusuario(){
+        $model = new \backend\models\ModuloPostHasUsuario();
+        if($model->load(Yii::$app->request->post())){
+            $model->fecha_creacion     = date("Y-m-d H:i:s");
+            $model->fecha_modificacion = date("Y-m-d H:i:s");
+            $model->activo             = 1;
+            $model->save();
+        }
+        
+    }
 }

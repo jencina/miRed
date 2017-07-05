@@ -21,6 +21,8 @@ use Yii;
  * @property Grupo[] $grupos
  * @property ModuloPostHasModuloRegistro[] $moduloPostHasModuloRegistros
  * @property ModuloRegistro[] $modRegs
+ * @property ModuloPostHasUsuario[] $moduloPostHasUsuarios
+ * @property Usuario[] $usuarioUsus
  */
 class ModuloPost extends \yii\db\ActiveRecord
 {
@@ -53,11 +55,11 @@ class ModuloPost extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'mod_post_id' => 'Mod Post ID',
-            'mod_post_titulo' => 'Mod Post Titulo',
-            'mod_post_fechacreacion' => 'Mod Post Fechacreacion',
-            'mod_post_fechamodificacion' => 'Mod Post Fechamodificacion',
-            'mod_post_asignado_usu_id' => 'Mod Post Asignado Usu ID',
+            'mod_post_id' => 'ID',
+            'mod_post_titulo' => 'Titulo',
+            'mod_post_fechacreacion' => 'Fechacreacion',
+            'mod_post_fechamodificacion' => 'Fechamodificacion',
+            'mod_post_asignado_usu_id' => 'Usuario Asignado',
             'mod_id' => 'Mod ID',
         ];
     }
@@ -116,5 +118,21 @@ class ModuloPost extends \yii\db\ActiveRecord
     public function getModRegs()
     {
         return $this->hasMany(ModuloRegistro::className(), ['mod_reg_id' => 'mod_reg_id'])->viaTable('modulo_post_has_modulo_registro', ['mod_post_id' => 'mod_post_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getModuloPostHasUsuarios()
+    {
+        return $this->hasMany(ModuloPostHasUsuario::className(), ['modulo_post_mod_post_id' => 'mod_post_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsuarioUsus()
+    {
+        return $this->hasMany(Usuario::className(), ['usu_id' => 'usuario_usu_id'])->viaTable('modulo_post_has_usuario', ['modulo_post_mod_post_id' => 'mod_post_id']);
     }
 }

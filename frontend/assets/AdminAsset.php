@@ -22,7 +22,7 @@ class AdminAsset extends AssetBundle
         'admin-theme/css/icons.css',
         'admin-theme/css/pages.css',
         'admin-theme/css/menu.css',
-        'admin-theme/css/responsive.css',
+        'admin-theme/css/responsive.css'
     ];
     
     public $js = [

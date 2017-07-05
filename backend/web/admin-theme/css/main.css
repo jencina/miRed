@@ -1,0 +1,12 @@
+.add-user,.add-file{
+    position: absolute;
+    background: #fff;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 2;
+    padding: 10px 5px;
+    display: none;
+    min-height: 100%;
+    
+}
