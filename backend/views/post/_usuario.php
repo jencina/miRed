@@ -1,0 +1,1 @@
+<img width="40" src="<?= Yii::getAlias('@web'); ?>/admin-theme/images/users/avatar-2.jpg" class="img-circle" data-toggle="tooltip" data-placement="bottom" data-original-title="<?= $model->usuarioUsu->usu_nombre.' '.$model->usuarioUsu->usu_apellido;?>">

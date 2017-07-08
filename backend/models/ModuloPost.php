@@ -63,6 +63,11 @@ class ModuloPost extends \yii\db\ActiveRecord
             'mod_id' => 'Mod ID',
         ];
     }
+    
+    public function getModuloPostFiles() 
+    { 
+        return $this->hasMany(ModuloPostFiles::className(), ['file_post_id' => 'mod_post_id']); 
+    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -86,6 +91,11 @@ class ModuloPost extends \yii\db\ActiveRecord
     public function getModuloPostComentarios()
     {
         return $this->hasMany(ModuloPostComentario::className(), ['com_mod_post_id' => 'mod_post_id']);
+    }
+    
+    public function getComentarios()
+    {
+        return ModuloPostComentario::find()->where(['com_mod_post_id'=>$this->mod_post_id]);
     }
 
     /**

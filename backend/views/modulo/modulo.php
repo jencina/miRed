@@ -51,6 +51,9 @@ $this->registerJs(<<<JS
             type:'post',
             dataType:'json',
             data:$(this).serialize(),
+            error:function(){
+                swal({ title: "Nuevo Modulo", text: "Hubo un error al generar Post.", type: "danger" });
+            },
             beforeSend:function(){
                 
             },
@@ -58,7 +61,7 @@ $this->registerJs(<<<JS
                 if(resp.status == 'false'){
                     $("#modulo-modal .modulo-form").html(resp.div);
                 }else{
-                    Custombox.close();
+                   $("#modulo-modal").modal("toggle");
                 }
             },complete:function(jqXHR, textStatus){
                 if(jqXHR.responseJSON.status == 'save'){

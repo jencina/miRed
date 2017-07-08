@@ -50,9 +50,10 @@ class UsuarioController extends Controller
     {    
         $dataProvider = new ActiveDataProvider([
             'query' => \backend\models\ModuloPost::find()->where(['mod_post_asignado_usu_id' => Yii::$app->user->id]),
-             'pagination' => [
-                    'pageSize' => 5,
-                ],
+            'sort'=> ['defaultOrder' => ['mod_post_fechamodificacion'=>SORT_DESC]], 
+            'pagination' => [
+                'pageSize' => 5,
+            ],
         ]);
          
         return $this->render('index', [

@@ -10,7 +10,7 @@ use Yii;
  * @property string $file_id
  * @property string $file_nombre
  * @property string $file_tipo
- * @property string $file_size
+ * @property integer $file_size
  * @property string $file_fechacreacion
  * @property string $file_fechamodificacion
  * @property string $file_post_id
@@ -35,11 +35,11 @@ class ModuloPostFiles extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['file_size', 'file_post_id', 'file_usu_id'], 'integer'],
             [['file_fechacreacion', 'file_fechamodificacion'], 'safe'],
             [['file_post_id', 'file_usu_id'], 'required'],
-            [['file_post_id', 'file_usu_id'], 'integer'],
             [['file_nombre'], 'string', 'max' => 255],
-            [['file_tipo', 'file_size'], 'string', 'max' => 45],
+            [['file_tipo'], 'string', 'max' => 45],
             [['file_post_id'], 'exist', 'skipOnError' => true, 'targetClass' => ModuloPost::className(), 'targetAttribute' => ['file_post_id' => 'mod_post_id']],
             [['file_usu_id'], 'exist', 'skipOnError' => true, 'targetClass' => Usuario::className(), 'targetAttribute' => ['file_usu_id' => 'usu_id']],
         ];
@@ -76,5 +76,30 @@ class ModuloPostFiles extends \yii\db\ActiveRecord
     public function getFileUsu()
     {
         return $this->hasOne(Usuario::className(), ['usu_id' => 'file_usu_id']);
+    }
+    
+    public function getFileImg(){
+        switch ($this->file_tipo){
+            case 'pdf';
+                $imagen = 'pdf.png';
+                break;
+            case 'excel';
+                $imagen = 'excel.png';
+                break;
+            case 'word';
+                $imagen = 'word.png';
+                break;
+            case 'ppt';
+                $imagen = 'ppt.png';
+                break;
+            case 'imagen';
+                $imagen = 'imagen.png';
+                break;
+            case 'otros';
+                $imagen = 'adjunto.png';
+                break;
+        }
+        
+        return $imagen;
     }
 }

@@ -1,0 +1,1 @@
+<img width="40" src="<?= Yii::getAlias('@web'); ?>/admin-theme/images/type-file/<?= $model->fileImg;?>" class="img-circle" data-toggle="tooltip" data-placement="bottom" data-original-title="<?= $model->file_nombre;?>">

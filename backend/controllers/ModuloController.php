@@ -8,6 +8,7 @@ use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * ModuloController implements the CRUD actions for Modulo model.
@@ -86,7 +87,18 @@ class ModuloController extends Controller
             $model->com_fechacreacion     = date("Y-m-d H:i:s");
             $model->com_fechamodificacion = date("Y-m-d H:i:s");
             $model->com_usuario_id        = Yii::$app->user->id;
-            $model->save();
+            if($model->save()){
+                echo json_encode([
+                    'status'=>'success',
+                    'id'=> $model->com_mod_post_id
+                ]);
+                exit;
+            }
+            echo json_encode([
+                'failed'=>'success',
+                'msj'   => 'Algo ocurrio al comentar!.'
+            ]);
+            exit;
             
         }
         
@@ -98,8 +110,55 @@ class ModuloController extends Controller
             $model->fecha_creacion     = date("Y-m-d H:i:s");
             $model->fecha_modificacion = date("Y-m-d H:i:s");
             $model->activo             = 1;
-            $model->save();
+            if($model->save()){
+                echo json_encode([
+                    'status'=> 'success',
+                    'id'    => $model->modulo_post_mod_post_id
+                ]);
+                exit;
+            }
+            echo json_encode([
+                'failed'=>'success',
+                'msj'   => 'Algo ocurrio al comentar!.'
+            ]);
+            exit;
         }
         
+    }
+    
+    function actionUploadfile(){
+        $model = new \backend\models\UploadForm();
+        if ($model->load(Yii::$app->request->post())) {
+            $model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
+            if ($model->upload()) {
+                
+                $file = new \backend\models\ModuloPostFiles();
+                $file->file_post_id           =  $model->parent_id;
+                $file->file_nombre            =  $model->imageFiles[0]->name;
+                $file->file_fechacreacion     =  date("Y-m-d H:i:s");
+                $file->file_fechamodificacion =  date("Y-m-d H:i:s");
+                $file->file_usu_id            =  Yii::$app->user->id;
+                $file->file_size              =  $model->imageFiles[0]->size;
+                $file->file_tipo              =  $model->imageFiles[0]->type;
+                
+                if($file->save()){
+                    echo json_encode([
+                        'status'=>'save',
+                        'id'=>$model->parent_id
+                    ]);
+                    exit;
+                }
+            }
+            echo json_encode([
+                'status'=>'failed',
+                'form' => $this->renderAjax('_formUpload',['model'=>$model])
+                ]);
+            exit;
+        }
+        echo json_encode([
+            'status'=>'success',
+            'form' => $this->renderAjax('_formUpload',['model'=>$model])
+            ]);
+        exit;
     }
 }

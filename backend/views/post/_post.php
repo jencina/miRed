@@ -2,6 +2,9 @@
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
+use yii\widgets\Pjax;
+use yii\widgets\ListView;
+use yii\data\ActiveDataProvider;
 ?>
 
 <div class="col-lg-12">
@@ -12,9 +15,7 @@ use yii\helpers\ArrayHelper;
             </h3>
 
             <div class="portlet-widgets">
-                <a href="javascript:;" data-toggle="reload"><i class="ion-refresh"></i></a>
-                <span class="divider"></span>
-                <a data-toggle="collapse" data-parent="#accordion1" href="#bg-default" class="" aria-expanded="true"><i class="ion-minus-round"></i></a>
+                <a data-toggle="collapse" data-parent="#accordion1" href="#bg-default<?= $model->mod_post_id ?>" class="" aria-expanded="true"><i class="ion-minus-round"></i></a>
                 <span class="divider"></span>
                 <a href="#" data-toggle="remove"><i class="ion-close-round"></i></a>
             </div>
@@ -22,7 +23,7 @@ use yii\helpers\ArrayHelper;
 
             </div>
         </div>
-        <div id="bg-default" class="panel-collapse collapse in" aria-expanded="true">
+        <div id="bg-default<?= $model->mod_post_id ?>" class="panel-collapse collapse in" aria-expanded="true">
 
             <div class="portlet-body">
                 <div class="col-md-12">
@@ -65,25 +66,43 @@ use yii\helpers\ArrayHelper;
                     <?php ActiveForm::end(); ?>
                 </div>
                 
-                <a class="btn btn-success  waves-effect waves-light open-add-user" ><i class="fa fa-users"></i></a>
-                <img width="40" src="<?= Yii::getAlias('@web'); ?>/admin-theme/images/users/avatar-2.jpg" class="img-circle" data-toggle="tooltip" data-placement="bottom" data-original-title="<?= $model->modPostAsignadoUsu->usu_nombre.' '.$model->modPostAsignadoUsu->usu_apellido;?>">
-                
-                <?php foreach($model->moduloPostHasUsuarios as $usu): ?>
-                    <img width="40" src="<?= Yii::getAlias('@web'); ?>/admin-theme/images/users/avatar-2.jpg" class="img-circle" data-toggle="tooltip" data-placement="bottom" data-original-title="<?= $usu->usuarioUsu->usu_nombre.' '.$usu->usuarioUsu->usu_apellido;?>">
-                <?php endforeach; ?>
-            
+                <a class="btn btn-success  waves-effect waves-light open-add-user" style="float:left" ><i class="fa fa-users"></i></a>
+                <img width="40" style="float:left;margin-left: 5px" src="<?= Yii::getAlias('@web'); ?>/admin-theme/images/users/avatar-2.jpg" class="img-circle" data-toggle="tooltip" data-placement="bottom" data-original-title="<?= $model->modPostAsignadoUsu->usu_nombre.' '.$model->modPostAsignadoUsu->usu_apellido;?>">
+                <?php Pjax::begin([
+                        'id' => 'usuario-'.$model->mod_post_id,
+                        'timeout'=>5500,
+                        'enablePushState' => false,
+                        'options'=>['style'=>'float:left']
+                ]) ?>
+                <?php
+                    $dataProvider = new ActiveDataProvider([
+                        'query' => backend\models\ModuloPostHasUsuario::find()->where(['modulo_post_mod_post_id'=>$model->mod_post_id]),
+                        'pagination' => [
+                            'pageSize' => 10,
+                        ],
+                    ]);
+                    echo ListView::widget([
+                        'dataProvider' => $dataProvider,
+                        'id' => 'list-usuario'.$model->mod_post_id,
+                         'layout' => '{items}',
+                        'itemOptions' => ['class' => 'item','style'=>'float:left;margin-left: 5px'],
+                        'itemView' => '_usuario'
+                    ]);
+                ?>
+                <?php Pjax::end() ?>
             </div>
 
             <hr class="m-0">
             <div class="panel-body p-t-10 p-b-10" style="position:relative">
                 <div class="col-md-12 add-file">
                     <?php
-                    $user = new backend\models\ModuloPost();
+                    $file = new backend\models\UploadForm();
+                    $file->parent_id = $model->mod_post_id;
                     $form = ActiveForm::begin([
-                        'options'=>['class'=>'form-comentario']
+                        'options'=>['class'=>'form-file']
                     ]); ?>
                     
-                    <?= $form->field($user, 'usuario_usu_id',['options'=>[
+                    <?= $form->field($file, 'imageFiles',['options'=>[
                         'class'=>'input-group','style'=>'min-height: 100%'],                
                         'template'=>''
                         . '<span class="input-group-btn">'
@@ -91,26 +110,59 @@ use yii\helpers\ArrayHelper;
                         . '</span>'
                         .'{input}'
                         . '<span class="input-group-btn">'
-                        . '<button type="button" class="btn waves-effect waves-light btn-primary"><i class="fa fa-upload"></i></button>'
+                        . '<button type="submit" class="btn waves-effect waves-light btn-primary"><i class="fa fa-upload"></i></button>'
                         . '</span>'
                         ])->fileInput(['class'=>'form-control'])->label(false); ?>
+                    <?= $form->field($file, 'parent_id')->hiddenInput()->label(false);?>
                     <?php ActiveForm::end(); ?>
                 </div>
-                <a class="btn btn-purple  waves-effect waves-light open-add-file"><i class="fa fa-upload"></i></a>
+                <a class="btn btn-purple  waves-effect waves-light open-add-file" style='float:left'><i class="fa fa-upload"></i></a>
+                <?php Pjax::begin([
+                        'id' => 'file-'.$model->mod_post_id,
+                        'timeout'=>5500,
+                        'enablePushState' => false,
+                        'options'=>['style'=>'float:left']
+                ]) ?>
+                <?php
+                    $dataProvider = new ActiveDataProvider([
+                        'query' => backend\models\ModuloPostFiles::find()->where(['file_post_id'=>$model->mod_post_id]),
+                        'pagination' => [
+                            'pageSize' => 10,
+                        ],
+                    ]);
+                    echo ListView::widget([
+                        'dataProvider' => $dataProvider,
+                        'id' => 'list-file'.$model->mod_post_id,
+                         'layout' => '{items}',
+                        'itemOptions' => ['class' => 'item','style'=>'margin-left: 5px;float:left'],
+                        'itemView' => '_file'
+                    ]);
+                ?>
+                <?php Pjax::end() ?>               
             </div>
             
             <div class="panel-footer">
                 <div class="inbox-widget nicescroll" tabindex="5001" style="overflow: hidden; outline: none;">
-                    <?php foreach ($model->moduloPostComentarios as $com):?>
-                    <a href="#">
-                        <div class="inbox-item">
-                            <div class="inbox-item-img"><img src="<?= Yii::getAlias('@web'); ?>/admin-theme/images/users/avatar-2.jpg" class="img-circle" alt=""></div>
-                            <p class="inbox-item-author"><?= $com->comUsuario->usu_nombre.' '.$com->comUsuario->usu_apellido ?></p>
-                            <p class="inbox-item-text"><?= $com->com_comentario ?></p>
-                            <p class="inbox-item-date"><?= date("H:i A" , strtotime($com->com_fechamodificacion)) ?></p>
-                        </div>
-                    </a>
-                    <?php endforeach;?>
+                    <?php Pjax::begin([
+                        'id' => 'comentario'.$model->mod_post_id,
+                        'timeout'=>5500,
+                        'enablePushState' => false
+                        ]) ?>
+                    <?php
+                        $dataProvider = new ActiveDataProvider([
+                            'query' => backend\models\ModuloPostComentario::find()->where(['com_mod_post_id'=>$model->mod_post_id]),
+                            'pagination' => [
+                                'pageSize' => 10,
+                            ],
+                        ]);
+                        echo ListView::widget([
+                            'dataProvider' => $dataProvider,
+                            'id' => 'list-comentario'.$model->mod_post_id,
+                            'itemOptions' => ['class' => 'item'],
+                            'itemView' => '_comentario'
+                        ]);
+                    ?>
+                    <?php Pjax::end() ?>
                 </div>
                 
                 <?php 
@@ -129,7 +181,7 @@ use yii\helpers\ArrayHelper;
                         . "</div>"
                     ];?>
                     
-                    <?= $form->field($comentario, 'com_comentario',$fieldOptions)->textInput(['placeholder'=>'Comentario...'])->label(false); ?>
+                    <?= $form->field($comentario, 'com_comentario',$fieldOptions)->textInput(['class'=>'form-control comentario', 'placeholder'=>'Comentario...'])->label(false); ?>
                     <?= $form->field($comentario, 'com_mod_post_id')->hiddenInput()->label(false) ?>
                     
                     <div class="col-sm-3 todo-send">
