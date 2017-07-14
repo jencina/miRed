@@ -5,6 +5,7 @@ use yii\helpers\ArrayHelper;
 use yii\widgets\Pjax;
 use yii\widgets\ListView;
 use yii\data\ActiveDataProvider;
+use yii\helpers\Url;
 ?>
 
 <div class="col-lg-12">
@@ -73,8 +74,7 @@ use yii\data\ActiveDataProvider;
                         'timeout'=>5500,
                         'enablePushState' => false,
                         'options'=>['style'=>'float:left']
-                ]) ?>
-                <?php
+                ]);
                     $dataProvider = new ActiveDataProvider([
                         'query' => backend\models\ModuloPostHasUsuario::find()->where(['modulo_post_mod_post_id'=>$model->mod_post_id]),
                         'pagination' => [
@@ -122,8 +122,7 @@ use yii\data\ActiveDataProvider;
                         'timeout'=>5500,
                         'enablePushState' => false,
                         'options'=>['style'=>'float:left']
-                ]) ?>
-                <?php
+                ]);
                     $dataProvider = new ActiveDataProvider([
                         'query' => backend\models\ModuloPostFiles::find()->where(['file_post_id'=>$model->mod_post_id]),
                         'pagination' => [
@@ -143,12 +142,12 @@ use yii\data\ActiveDataProvider;
             
             <div class="panel-footer">
                 <div class="inbox-widget nicescroll" tabindex="5001" style="overflow: hidden; outline: none;">
-                    <?php Pjax::begin([
+                    <?php 
+                    Pjax::begin([
                         'id' => 'comentario'.$model->mod_post_id,
                         'timeout'=>5500,
                         'enablePushState' => false
-                        ]) ?>
-                    <?php
+                        ]);
                         $dataProvider = new ActiveDataProvider([
                             'query' => backend\models\ModuloPostComentario::find()->where(['com_mod_post_id'=>$model->mod_post_id]),
                             'pagination' => [
@@ -161,14 +160,14 @@ use yii\data\ActiveDataProvider;
                             'itemOptions' => ['class' => 'item'],
                             'itemView' => '_comentario'
                         ]);
-                    ?>
-                    <?php Pjax::end() ?>
+                        Pjax::end() ?>
                 </div>
                 
                 <?php 
                 $comentario = new \backend\models\ModuloPostComentario();
                 $comentario->com_mod_post_id = $model->mod_post_id;
                 $form = ActiveForm::begin([
+                    'id'=>'comentario-form',
                     'options'=>['class'=>'form-comentario']
                 ]); ?>
                 <div class="row">
@@ -193,32 +192,3 @@ use yii\data\ActiveDataProvider;
         </div>
     </div>
 </div>
-
-<?php
-$this->registerJsFile(Yii::getAlias('@web') . '/plugins/custombox/dist/legacy.min.js', ['depends' => [yii\web\JqueryAsset::className()]]);
-$this->registerCssFile(Yii::getAlias('@web') . '/plugins/custombox/dist/custombox.min.css', ['depends' => [yii\web\JqueryAsset::className()]]);
-
-$this->registerJs(<<<JS
-
-    $(".open-add-user").on("click",function(){
-        $(this).parent().find(".add-user").toggle( "slide" )
-    });
-        
-    $(".return-users").on("click",function(){
-        $(this).parents(".add-user").toggle( "slide" )
-    });
-        
-    $(".open-add-file").on("click",function(){
-        $(this).parent().find(".add-file").toggle( "slide" )
-    });
-        
-    $(".return-files").on("click",function(){
-        $(this).parents(".add-file").toggle( "slide" )
-    });
-        
-    
-        
-JS
-   );
-
-?>

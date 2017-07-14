@@ -25,10 +25,11 @@ class UsuarioController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
+                'only' => ['index'],
                 'rules' => [
                     [
-                        'actions' => ['index'],
                         'allow' => true,
+                        'actions' => ['index'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -48,18 +49,17 @@ class UsuarioController extends Controller
      */
     public function actionIndex()
     {    
-        $dataProvider = new ActiveDataProvider([
-            'query' => \backend\models\ModuloPost::find()->where(['mod_post_asignado_usu_id' => Yii::$app->user->id]),
-            'sort'=> ['defaultOrder' => ['mod_post_fechamodificacion'=>SORT_DESC]], 
-            'pagination' => [
-                'pageSize' => 5,
-            ],
-        ]);
-         
-        return $this->render('index', [
-            'dataProvider'=> $dataProvider
-            
-        ]);
+        /*$dataProvider = new ActiveDataProvider([
+                    'query' => \backend\models\ModuloPost::find()
+                        ->where(['mod_activo'=>1])
+                        ->andWhere(['or',['mod_usu_id' => Yii::$app->user->id],['mod_post_asignado_usu_id' => Yii::$app->user->id]]),
+                    'sort'=> ['defaultOrder' => ['mod_post_fechamodificacion'=>SORT_DESC]], 
+                    'pagination' => [
+                        'pageSize' => 5,
+                    ],
+                ]);
+                */
+        return $this->render('index');
     }
 
     /**

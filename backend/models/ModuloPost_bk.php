@@ -13,21 +13,16 @@ use Yii;
  * @property string $mod_post_fechamodificacion
  * @property string $mod_post_asignado_usu_id
  * @property string $mod_id
- * @property string $mod_usu_id
- * @property integer $mod_activo
  *
  * @property Modulo $mod
  * @property Usuario $modPostAsignadoUsu
- * @property Usuario $modUsu
  * @property ModuloPostComentario[] $moduloPostComentarios
- * @property ModuloPostFiles[] $moduloPostFiles
  * @property ModuloPostHasGrupo[] $moduloPostHasGrupos
  * @property Grupo[] $grupos
  * @property ModuloPostHasModuloRegistro[] $moduloPostHasModuloRegistros
  * @property ModuloRegistro[] $modRegs
  * @property ModuloPostHasUsuario[] $moduloPostHasUsuarios
  * @property Usuario[] $usuarioUsus
- * @property Notificacion[] $notificacions
  */
 class ModuloPost extends \yii\db\ActiveRecord
 {
@@ -46,12 +41,11 @@ class ModuloPost extends \yii\db\ActiveRecord
     {
         return [
             [['mod_post_fechacreacion', 'mod_post_fechamodificacion'], 'safe'],
-            [['mod_post_asignado_usu_id', 'mod_id', 'mod_usu_id'], 'required'],
-            [['mod_post_asignado_usu_id', 'mod_id', 'mod_usu_id', 'mod_activo'], 'integer'],
+            [['mod_post_asignado_usu_id', 'mod_id'], 'required'],
+            [['mod_post_asignado_usu_id', 'mod_id'], 'integer'],
             [['mod_post_titulo'], 'string', 'max' => 100],
             [['mod_id'], 'exist', 'skipOnError' => true, 'targetClass' => Modulo::className(), 'targetAttribute' => ['mod_id' => 'mod_id']],
             [['mod_post_asignado_usu_id'], 'exist', 'skipOnError' => true, 'targetClass' => Usuario::className(), 'targetAttribute' => ['mod_post_asignado_usu_id' => 'usu_id']],
-            [['mod_usu_id'], 'exist', 'skipOnError' => true, 'targetClass' => Usuario::className(), 'targetAttribute' => ['mod_usu_id' => 'usu_id']],
         ];
     }
 
@@ -67,9 +61,12 @@ class ModuloPost extends \yii\db\ActiveRecord
             'mod_post_fechamodificacion' => 'Fechamodificacion',
             'mod_post_asignado_usu_id' => 'Usuario Asignado',
             'mod_id' => 'Mod ID',
-            'mod_usu_id' => 'Mod Usu ID',
-            'mod_activo' => 'Mod Activo',
         ];
+    }
+    
+    public function getModuloPostFiles() 
+    { 
+        return $this->hasMany(ModuloPostFiles::className(), ['file_post_id' => 'mod_post_id']); 
     }
 
     /**
@@ -91,25 +88,14 @@ class ModuloPost extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getModUsu()
-    {
-        return $this->hasOne(Usuario::className(), ['usu_id' => 'mod_usu_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getModuloPostComentarios()
     {
         return $this->hasMany(ModuloPostComentario::className(), ['com_mod_post_id' => 'mod_post_id']);
     }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getModuloPostFiles()
+    
+    public function getComentarios()
     {
-        return $this->hasMany(ModuloPostFiles::className(), ['file_post_id' => 'mod_post_id']);
+        return ModuloPostComentario::find()->where(['com_mod_post_id'=>$this->mod_post_id]);
     }
 
     /**
@@ -158,13 +144,5 @@ class ModuloPost extends \yii\db\ActiveRecord
     public function getUsuarioUsus()
     {
         return $this->hasMany(Usuario::className(), ['usu_id' => 'usuario_usu_id'])->viaTable('modulo_post_has_usuario', ['modulo_post_mod_post_id' => 'mod_post_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNotificacions()
-    {
-        return $this->hasMany(Notificacion::className(), ['not_post_id' => 'mod_post_id']);
     }
 }

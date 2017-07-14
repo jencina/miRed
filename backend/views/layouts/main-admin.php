@@ -7,6 +7,9 @@ use yii\helpers\Html;
 use backend\assets\AdminAsset;
 use yii\widgets\Breadcrumbs;
 use yii\helpers\Url;
+use yii\widgets\Pjax;
+use yii\widgets\ListView;
+use yii\data\ActiveDataProvider;
 
 AdminAsset::register($this);
 ?>
@@ -61,56 +64,38 @@ AdminAsset::register($this);
                                             class="badge badge-xs badge-pink">3</span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-lg">
-                                        <li class="text-center notifi-title">Notification</li>
+                                        <li class="text-center notifi-title">Notificaciones</li>
                                         <li class="list-group nicescroll notification-list">
-                                            <!-- list item-->
-                                            <a href="javascript:void(0);" class="list-group-item">
-                                                <div class="media">
-                                                    <div class="pull-left p-r-10">
-                                                        <em class="fa fa-diamond noti-primary"></em>
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <h5 class="media-heading">A new order has been placed A new
-                                                            order has been placed</h5>
-                                                        <p class="m-0">
-                                                            <small>There are new settings available</small>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </a>
+                                            <?php Pjax::begin([
+                                                'id' => 'notificacion-list',
+                                                'timeout'=>5500,
+                                                'enablePushState' => false,
+                                                // 'clientOptions' => ['method' => 'POST']
+                                                ]) ?>
+                                            <?php
+                                                $dataProvider = new ActiveDataProvider([
+                                                    'query' => \backend\models\Notificacion::find()
+                                                        ->where(['not_usu_id_para'=>Yii::$app->user->id]),
+                                                    'sort'=> ['defaultOrder' => ['not_fechamodificacion'=>SORT_DESC]], 
+                                                    'pagination' => [
+                                                        'pageSize' => 5,
+                                                    ],
+                                                ]);
+                                                
+                                                echo ListView::widget([
+                                                    'dataProvider' => $dataProvider,
+                                                    'id' => 'post-listview',
+                                                    'itemOptions' => ['class' => 'item-list'],
+                                                    'itemView' => '//post/_notificacion',
+                                                    'layout'=>'{items}{pager}',
 
-                                            <!-- list item-->
-                                            <a href="javascript:void(0);" class="list-group-item">
-                                                <div class="media">
-                                                    <div class="pull-left p-r-10">
-                                                        <em class="fa fa-cog noti-warning"></em>
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <h5 class="media-heading">New settings</h5>
-                                                        <p class="m-0">
-                                                            <small>There are new settings available</small>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </a>
-
-                                            <!-- list item-->
-                                            <a href="javascript:void(0);" class="list-group-item">
-                                                <div class="media">
-                                                    <div class="pull-left p-r-10">
-                                                        <em class="fa fa-bell-o noti-success"></em>
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <h5 class="media-heading">Updates</h5>
-                                                        <p class="m-0">
-                                                            <small>There are <span class="text-primary">2</span> new
-                                                                updates available
-                                                            </small>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </a>
-
+                                                    'pager' => [
+                                                       // 'class' => \kop\y2sp\ScrollPager::className(),
+                                                       // 'triggerText'=>'Cargar Post'
+                                                      ]
+                                                ]);
+                                            ?>
+                                            <?php Pjax::end() ?>
                                         </li>
 
                                         <li>
@@ -182,7 +167,7 @@ AdminAsset::register($this);
                         <a href="" class="dropdown-toggle profile" data-toggle="dropdown" aria-expanded="true">
                             <img  src="<?= Yii::getAlias('@web'); ?>/admin-theme/images/users/avatar-2.jpg" alt="user-img" class="img-circle">
                             <span class="user-info-span">
-                                <h5 class="m-t-0 m-b-0">John Deo</h5>
+                                <h5 class="m-t-0 m-b-0"><?= Yii::$app->user->identity->usu_nombre.' '.Yii::$app->user->identity->usu_apellido?></h5>
                                 <p class="text-muted m-b-0">
                                     <small><i class="fa fa-circle text-success"></i> <span>Online</span></small>
                                 </p>
@@ -245,9 +230,9 @@ AdminAsset::register($this);
 
 
 <?php
-$this->registerJsFile(Yii::getAlias('@web') . '/plugins/custombox/dist/custombox.min.js', ['depends' => [yii\web\JqueryAsset::className()]]);
-$this->registerJsFile(Yii::getAlias('@web') . '/plugins/custombox/dist/legacy.min.js', ['depends' => [yii\web\JqueryAsset::className()]]);
-$this->registerCssFile(Yii::getAlias('@web') . '/plugins/custombox/dist/custombox.min.css', ['depends' => [yii\web\JqueryAsset::className()]]);
+//$this->registerJsFile(Yii::getAlias('@web') . '/plugins/custombox/dist/custombox.min.js', ['depends' => [yii\web\JqueryAsset::className()]]);
+//$this->registerJsFile(Yii::getAlias('@web') . '/plugins/custombox/dist/legacy.min.js', ['depends' => [yii\web\JqueryAsset::className()]]);
+//$this->registerCssFile(Yii::getAlias('@web') . '/plugins/custombox/dist/custombox.min.css', ['depends' => [yii\web\JqueryAsset::className()]]);
 ?>
    
 <?php

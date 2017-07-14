@@ -42,6 +42,8 @@ class AdminAsset extends AssetBundle
         
         'plugins/switchery/switchery.min.js',
         
+        'plugins/notifyjs/dist/notify.min.js',
+        'plugins/notifications/notify-metro.js',
         //'plugins/custombox/dist/custombox.min.js',
         //'plugins/custombox/dist/legacy.min.js',
         

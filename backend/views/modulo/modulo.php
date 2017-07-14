@@ -33,7 +33,7 @@ echo $form->field($post, 'mod_post_asignado_usu_id')
 echo \yii\bootstrap\Html::hiddenInput('mod_id', $modulo->mod_id);
 
 echo '<div class="modal-footer">';
-echo Html::submitButton('Guardar', ['class' => 'btn btn-primary']);
+echo Html::submitButton('Guardar', ['id'=>'btn-guardar','class'=> 'btn btn-primary']);
 echo '</div>';
 
 
@@ -45,17 +45,33 @@ ActiveForm::end();
 
 $this->registerJs(<<<JS
    $('form#post-form').on('beforeSubmit',function(){
-        console.log('asd');
         $.ajax({
             url: $(this)[0].action,
             type:'post',
             dataType:'json',
             data:$(this).serialize(),
             error:function(){
-                swal({ title: "Nuevo Modulo", text: "Hubo un error al generar Post.", type: "danger" });
+                $("#btn-guardar").button('reset');
+               
+                console.log('error');
+                
+                $.notify({
+                    title: "Nuevo Modulo",
+                    text: "Hubo un error al generar Post.",
+                    image: "<i class='fa fa-exclamation'></i>"
+                }, {
+                    style: 'metro',
+                    className: "error",
+                    globalPosition:"bottom right",
+                    showAnimation: "show",
+                    showDuration: 0,
+                    hideDuration: 0,
+                    autoHide: true,
+                    clickToHide: true
+                });
             },
             beforeSend:function(){
-                
+                $("#btn-guardar").button('loading');
             },
             success:function(resp){
                 if(resp.status == 'false'){
@@ -68,6 +84,7 @@ $this->registerJs(<<<JS
                     $.pjax.reload({container: '#post-list' , async: false});
                     swal({ title: "Nuevo Modulo", text: "Post generado con exito.", type: "success" });
                 }
+                $("#btn-guardar").button('reset');
             }
         });
         

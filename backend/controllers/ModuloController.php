@@ -29,6 +29,35 @@ class ModuloController extends Controller
             ],
         ];
     }
+    
+    public function actionGetpost(){
+        
+                $post = \backend\models\ModuloPost::find()
+                ->where(['mod_activo'=>1])
+                ->andWhere(['or',['mod_usu_id' => Yii::$app->user->id],['mod_post_asignado_usu_id' => Yii::$app->user->id]])
+                ->limit(10)  //hasta
+                ->offset(1) //desde
+                ->orderBy([ 'mod_post_fechamodificacion' => SORT_DESC])
+                ->all();
+
+                /*
+                    $post = new ActiveDataProvider([
+                    'query' => \backend\models\ModuloPost::find()
+                        ->where(['mod_activo'=>1])
+                        ->andWhere(['or',['mod_usu_id' => Yii::$app->user->id],['mod_post_asignado_usu_id' => Yii::$app->user->id]]),
+                    'sort'=> ['defaultOrder' => ['mod_post_fechamodificacion'=>SORT_DESC]], 
+                    'pagination' => [
+                        'pageSize' => 5,
+                    ],
+                ]);*/
+
+                echo json_encode($this->renderAjax('//post/post',['post'=>$post]));
+        
+        
+        
+        //exit;
+
+    }
 
     public function actionLoadmodulo(){
         
@@ -42,6 +71,8 @@ class ModuloController extends Controller
             $post->mod_post_fechamodificacion =  date("Y-m-d H:i:s");
             $post->mod_post_titulo            =  'Ha creado';
             $post->mod_id                     =  $mod_id;
+            $post->mod_activo                 =  1;
+            $post->mod_usu_id                 =  Yii::$app->user->id;
             if($post->save()){
              
                 foreach ($_POST['ModuloPostHasModuloRegistro'] as $index => $reg){
@@ -50,8 +81,19 @@ class ModuloController extends Controller
                     $mod->mod_reg_id  = $index;
                     $mod->contenido   = $reg;
                     $mod->insert(); 
-                }    
-                 echo json_encode([
+                } 
+                
+                $notificacion = new \backend\models\Notificacion();
+                $notificacion->not_fechacreacion     = date("Y-m-d H:i:s");
+                $notificacion->not_fechamodificacion = date("Y-m-d H:i:s");
+                $notificacion->not_usu_id            = Yii::$app->user->id;
+                $notificacion->not_usu_id_para       = $post->mod_post_asignado_usu_id;
+                $notificacion->not_titulo            = 'te ha asignado el post';
+                $notificacion->not_tipo              = 1;
+                $notificacion->not_post_id           = $post->mod_post_id;
+                $notificacion->insert();
+                
+                echo json_encode([
                     'status'=>'save'
                 ]);
                 exit; 
