@@ -51,10 +51,8 @@ class ModuloController extends Controller
                     ],
                 ]);*/
 
-                echo json_encode($this->renderAjax('//post/post',['post'=>$post]));
-        
-        
-        
+               // echo json_encode($this->renderAjax('//post/post',['post'=>$post]));
+                return  $this->renderAjax('//post/post',['post'=>$post]);
         //exit;
 
     }
@@ -132,7 +130,8 @@ class ModuloController extends Controller
             if($model->save()){
                 echo json_encode([
                     'status'=>'success',
-                    'id'=> $model->com_mod_post_id
+                    'id'=> $model->com_mod_post_id,
+                    'coment'=> $this->renderAjax('//post/_comentario',['model'=>$model])
                 ]);
                 exit;
             }

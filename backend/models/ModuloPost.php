@@ -61,14 +61,14 @@ class ModuloPost extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'mod_post_id' => 'ID',
-            'mod_post_titulo' => 'Titulo',
-            'mod_post_fechacreacion' => 'Fechacreacion',
-            'mod_post_fechamodificacion' => 'Fechamodificacion',
-            'mod_post_asignado_usu_id' => 'Usuario Asignado',
-            'mod_id' => 'Mod ID',
-            'mod_usu_id' => 'Mod Usu ID',
-            'mod_activo' => 'Mod Activo',
+            'mod_post_id'               => 'ID',
+            'mod_post_titulo'           => 'Titulo',
+            'mod_post_fechacreacion'    => 'Fechacreacion',
+            'mod_post_fechamodificacion'=> 'Fechamodificacion',
+            'mod_post_asignado_usu_id'  => 'Usuario Asignado',
+            'mod_id'                    => 'Mod ID',
+            'mod_usu_id'                => 'Mod Usu ID',
+            'mod_activo'                => 'Mod Activo',
         ];
     }
 

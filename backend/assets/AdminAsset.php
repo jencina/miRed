@@ -23,7 +23,7 @@ class AdminAsset extends AssetBundle
         'admin-theme/css/pages.css',
         'admin-theme/css/menu.css',
         'admin-theme/css/responsive.css',
-            'admin-theme/css/main.css',
+        'admin-theme/css/main.css',
     ];
         
     

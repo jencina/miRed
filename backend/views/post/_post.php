@@ -1,6 +1,6 @@
 <?php 
 use yii\bootstrap\ActiveForm;
-use yii\helpers\Html;
+use yii\bootstrap\Html;
 use yii\helpers\ArrayHelper;
 use yii\widgets\Pjax;
 use yii\widgets\ListView;
@@ -12,7 +12,7 @@ use yii\helpers\Url;
     <div class="portlet panel panel-<?= $model->mod->mod_color ?> panel-border">
         <div class="portlet-heading portlet-default panel-heading">
             <h3 class="portlet-title text-dark">
-                <span class="dropcap text-<?= $model->mod->mod_color ?>"><?= substr($model->mod->mod_nombre, 0, 1) ?></span> Default Heading
+                <span class="dropcap text-<?= $model->mod->mod_color ?>"><?= substr($model->mod->mod_nombre, 0, 1) ?></span><?= Html::a($model->modUsu->usu_nombre.' '.$model->modUsu->usu_apellido,"#"); ?>  <?= $model->mod_post_titulo?> <?= Html::a($model->mod->mod_nombre.' #'.$model->mod_post_id,"#")?>
             </h3>
 
             <div class="portlet-widgets">
@@ -49,7 +49,9 @@ use yii\helpers\Url;
                     $user = new backend\models\ModuloPostHasUsuario();
                     $user->modulo_post_mod_post_id = $model->mod_post_id;
                     $form = ActiveForm::begin([
-                        'options'=>['class'=>'form-usuario']
+                        'options'=>['class'=>'form-usuario'],
+                        'enableClientValidation'=>false,
+                        'options' => ['data-pjax' => false ]
                     ]); ?>
                     
                     <?= $form->field($user, 'usuario_usu_id',['options'=>[
@@ -99,7 +101,9 @@ use yii\helpers\Url;
                     $file = new backend\models\UploadForm();
                     $file->parent_id = $model->mod_post_id;
                     $form = ActiveForm::begin([
-                        'options'=>['class'=>'form-file']
+                        'options'=>['class'=>'form-file'],
+                        'enableClientValidation'=>false,
+                        'options' => ['data-pjax' => false ]
                     ]); ?>
                     
                     <?= $form->field($file, 'imageFiles',['options'=>[
@@ -142,33 +146,49 @@ use yii\helpers\Url;
             
             <div class="panel-footer">
                 <div class="inbox-widget nicescroll" tabindex="5001" style="overflow: hidden; outline: none;">
+                    <div id="list-comentario<?= $model->mod_post_id; ?>" class="col-md-12">
                     <?php 
-                    Pjax::begin([
+                     /*Pjax::begin([
                         'id' => 'comentario'.$model->mod_post_id,
                         'timeout'=>5500,
                         'enablePushState' => false
-                        ]);
-                        $dataProvider = new ActiveDataProvider([
+                        ]);*/
+                    
+                        /*$dataProvider = new ActiveDataProvider([
                             'query' => backend\models\ModuloPostComentario::find()->where(['com_mod_post_id'=>$model->mod_post_id]),
                             'pagination' => [
                                 'pageSize' => 10,
                             ],
-                        ]);
+                        ]);*/
+                        $comentarios = backend\models\ModuloPostComentario::find()
+                                        ->where(['com_mod_post_id'=>$model->mod_post_id])
+                                        ->limit(5)  //hasta
+                                        ->offset(1) //desde
+                                        ->orderBy([ 'com_fechamodificacion' => SORT_ASC])
+                                        ->all();
+                        
+                        foreach ($comentarios as $com){
+                               echo $this->render('_comentario',['model'=>$com]);
+                        }
+                        /*
                         echo ListView::widget([
                             'dataProvider' => $dataProvider,
                             'id' => 'list-comentario'.$model->mod_post_id,
                             'itemOptions' => ['class' => 'item'],
                             'itemView' => '_comentario'
-                        ]);
-                        Pjax::end() ?>
+                        ]);*/
+                        
+                        // Pjax::end() ?>
+                    </div>
                 </div>
                 
                 <?php 
                 $comentario = new \backend\models\ModuloPostComentario();
                 $comentario->com_mod_post_id = $model->mod_post_id;
                 $form = ActiveForm::begin([
-                    'id'=>'comentario-form',
-                    'options'=>['class'=>'form-comentario']
+                    'id'=>'comentario-form'.$model->mod_post_id,
+                    'enableClientValidation'=>false,
+                    'options'=>['class'=>'form-comentario','data-pjax' => false ]
                 ]); ?>
                 <div class="row">
                     <?php 
