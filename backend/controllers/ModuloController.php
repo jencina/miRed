@@ -141,8 +141,7 @@ class ModuloController extends Controller
             ]);
             exit;
             
-        }
-        
+        }      
     }
     
     public function actionAgregarusuario(){
@@ -151,24 +150,32 @@ class ModuloController extends Controller
             $model->fecha_creacion     = date("Y-m-d H:i:s");
             $model->fecha_modificacion = date("Y-m-d H:i:s");
             $model->activo             = 1;
-            if($model->save()){
-                echo json_encode([
-                    'status'=> 'success',
-                    'id'    => $model->modulo_post_mod_post_id
-                ]);
-                exit;
+            
+            $exist = \backend\models\ModuloPostHasUsuario::findOne([
+                'modulo_post_mod_post_id'=> $model->modulo_post_mod_post_id,
+                'usuario_usu_id'         => $model->usuario_usu_id]);
+            
+            if(!$exist){
+                if($model->save()){
+                    echo json_encode([
+                        'status'=> 'success',
+                        'id'    => $model->modulo_post_mod_post_id
+                    ]);
+                    exit;
+                }
             }
+                       
             echo json_encode([
-                'failed'=>'success',
-                'msj'   => 'Algo ocurrio al comentar!.'
+                'status'=>'failed',
+                'msj'   => 'Algo ocurrio al asignar usuario!.'
             ]);
             exit;
-        }
-        
+        }       
     }
     
     function actionUploadfile(){
         $model = new \backend\models\UploadForm();
+        
         if ($model->load(Yii::$app->request->post())) {
             $model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
             if ($model->upload()) {
@@ -188,18 +195,40 @@ class ModuloController extends Controller
                         'id'=>$model->parent_id
                     ]);
                     exit;
-                }
+                } 
             }
-            echo json_encode([
-                'status'=>'failed',
-                'form' => $this->renderAjax('_formUpload',['model'=>$model])
-                ]);
-            exit;
         }
         echo json_encode([
-            'status'=>'success',
-            'form' => $this->renderAjax('_formUpload',['model'=>$model])
+            'status'=>'failed',
+            //'form' => $this->renderAjax('_formUpload',['model'=>$model])
             ]);
         exit;
+    }
+    
+    public function actionUpdatefiles(){
+        
+        $id = Yii::$app->request->post('id');
+        $dataProvider = new ActiveDataProvider([
+            'query' => \backend\models\ModuloPostFiles::find()->where(['file_post_id'=>$id]),
+            'pagination' => [
+                'pageSize' => 10,
+            ],
+        ]);
+        
+        return $this->renderAjax('//post/Files',['dataProvider'=>$dataProvider,'id'=>$id]);
+    }
+    
+    public function actionUpdateusuarios(){
+        
+        $id = Yii::$app->request->post('id');
+        
+        $dataProvider = new ActiveDataProvider([
+            'query' => \backend\models\ModuloPostHasUsuario::find()->where(['modulo_post_mod_post_id'=>$id]),
+            'pagination' => [
+                'pageSize' => 10,
+            ],
+        ]);
+        
+        return $this->renderAjax('//post/Usuarios',['dataProvider'=>$dataProvider,'id'=>$id]);
     }
 }

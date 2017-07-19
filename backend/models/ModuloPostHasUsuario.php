@@ -69,4 +69,6 @@ class ModuloPostHasUsuario extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Usuario::className(), ['usu_id' => 'usuario_usu_id']);
     }
+    
+    
 }

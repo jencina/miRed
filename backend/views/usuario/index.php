@@ -66,131 +66,191 @@ $this->params['tittle'] = 'Bienvenido';
 $urlFormModulo  = \yii\helpers\Json::htmlEncode(Url::to(['modulo/createcomentario']));
 $urlFormUsuario = \yii\helpers\Json::htmlEncode(Url::to(['modulo/agregarusuario']));
 $urlFormFile    = \yii\helpers\Json::htmlEncode(Url::to(['modulo/uploadfile']));
+$updateFile     = \yii\helpers\Json::htmlEncode(Url::to(['modulo/updatefiles']));
+$updateUsuarios = \yii\helpers\Json::htmlEncode(Url::to(['modulo/updateusuarios']));
+
 $urlGetPost     = \yii\helpers\Json::htmlEncode(Url::to(['modulo/getpost']));
 
 $this->registerJs(<<<JS
         
-        $(document).on("ready pjax:success",function(e){
-            e.preventDefault();  
+    $(document).on("ready pjax:success",function(e){
+        e.preventDefault();  
+        $.ajax({
+            url: $urlGetPost,
+            type:'post',
+            //dataType:'json',
+            data:$(this).serialize(),
+            error:function(){
+                //form.find("button").button("reset");
+            },
+            beforeSend:function(){
+                //form.find("button").button("loading");
+            },
+            success:function(resp){
+                $("#lista-post").html(resp);
+            },complete:function(jqXHR, textStatus){
+
+            }
+        });
+        return false;
+    });
+
+    $(document).ajaxComplete(function(){
+
+        $("form.form-usuario").on("beforeSubmit",function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            var form = $(this);
             $.ajax({
-                url: $urlGetPost,
+                url: $urlFormUsuario,
                 type:'post',
-                //dataType:'json',
-                data:$(this).serialize(),
-                error:function(){
-                    //form.find("button").button("reset");
+                dataType:'json',
+                data: form.serialize(),
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
                 },
                 beforeSend:function(){
-                    //form.find("button").button("loading");
+
                 },
                 success:function(resp){
-                    $("#lista-post").html(resp);
+                   updateUsuarios(resp.id);
                 },complete:function(jqXHR, textStatus){
-        
+
                 }
             });
             return false;
         });
-        
-        $(document).ajaxComplete(function(){
-        
-            $("form.form-usuario").on("beforeSubmit",function(e){
-                e.preventDefault();
-                e.stopImmediatePropagation();
-        
-                var form = $(this);
-                $.ajax({
-                    url: $urlFormUsuario,
-                    type:'post',
-                    dataType:'json',
-                    data: form.serialize(),
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        alert(xhr.status);
-                        alert(thrownError);
-                    },
-                    beforeSend:function(){
 
-                    },
-                    success:function(resp){
-                       $.pjax.reload({container: '#usuario-'+resp.id, async: false, replace:false,push:true});
-                    },complete:function(jqXHR, textStatus){
+        $("form.form-comentario").on("beforeSubmit",function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
 
-                    }
-                });
-                return false;
+            var form = $(this);
+             $.ajax({
+                url: $urlFormModulo,
+                type:'post',
+                dataType:'json',
+                data: form.serialize(),
+                error:function(){
+                    form.find("button").button("reset");
+                },
+                beforeSend:function(){
+                   form.find("button").button("loading");
+                },
+                success:function(resp){
+                    $("#list-comentario"+resp.id).append(resp.coment);
+                },complete:function(jqXHR, textStatus){
+                    form.find("input.comentario").val("");
+                    form.find("button").button("reset");
+                }
             });
+            return false;
+        });
+
+        $("form.form-file").on("beforeSubmit",function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
         
-            $("form.form-comentario").on("beforeSubmit",function(e){
-                e.preventDefault();
-                e.stopImmediatePropagation();
+            var form = $(this);
+            $.ajax({
+                url: $urlFormFile,
+                type:'post',
+                dataType:"json",
+                data: new FormData( form[0] ),
+                processData: false,
+                contentType: false,
+                error: function (xhr, ajaxOptions, thrownError) {
+                   // alert(xhr.status);
+                   // alert(thrownError);
+                },
+                beforeSend:function(){
+
+                },
+                success:function(resp){
+                    updateFiles(resp.id);
+                    //$.pjax.reload({container: '#file-'+resp.id,url:$updateFile,async: false,push:false,timeout:5000});
+                },complete:function(jqXHR, textStatus){
+resp.id
+                }
+            });
+            return false;
+        });
+
+        $(".open-add-user").on("click",function(e){
+        e.preventDefault();
+            e.stopImmediatePropagation();
+            $(this).parent().find(".add-user").toggle( "slide" );
+        });
+
+        $(".return-users").on("click",function(e){
+        e.preventDefault();
+            e.stopImmediatePropagation();
+            $(this).parents(".add-user").toggle( "slide" );
+        });
+
+        $(".open-add-file").on("click",function(e){
+        e.preventDefault();
+            e.stopImmediatePropagation();
+            $(this).parent().find(".add-file").toggle( "slide" );
+        });
+
+        $(".return-files").on("click",function(e){
+        e.preventDefault();
+            e.stopImmediatePropagation();
+            $(this).parents(".add-file").toggle( "slide" );
+        });
         
-                var form = $(this);
-                 $.ajax({
-                    url: $urlFormModulo,
-                    type:'post',
-                    dataType:'json',
-                    data: form.serialize(),
-                    error:function(){
-                        form.find("button").button("reset");
-                    },
-                    beforeSend:function(){
-                       form.find("button").button("loading");
-                    },
-                    success:function(resp){
-                        $("#list-comentario"+resp.id).append(resp.coment);
-                    },complete:function(jqXHR, textStatus){
-                        form.find("input.comentario").val("");
-                        form.find("button").button("reset");
-                    }
-                });
-                
-                return false;
+        function updateFiles(id){
+            $.ajax({
+                url: $updateFile,
+                type:'post',
+                //dataType:"json",
+                data: {id:id},
+                error: function (xhr, ajaxOptions, thrownError) {
+                   // alert(xhr.status);
+                   // alert(thrownError);
+                },
+                beforeSend:function(){
+
+                },
+                success:function(resp){
+                    $("#list-file"+id).replaceWith(resp);
+                },complete:function(jqXHR, textStatus){
+
+                }
             });
+            return false;
+        }
         
-            $("form.form-file").on("beforeSubmit",function(e){
-                e.preventDefault();
-                e.stopImmediatePropagation();
+        function updateUsuarios(id){
+            $.ajax({
+                url: $updateUsuarios,
+                type:'post',
+                //dataType:"json",
+                data: {id:id},
+                error: function (xhr, ajaxOptions, thrownError) {
+                   // alert(xhr.status);
+                   // alert(thrownError);
+                },
+                beforeSend:function(){
+
+                },
+                success:function(resp){
+                    $("#list-usuario"+id).replaceWith(resp);
+                },complete:function(jqXHR, textStatus){
+
+                }
+            });
+            return false;
+        }
         
-                $.ajax({
-                    url: $urlFormFile,
-                    type:'post',
-                    dataType:"json",
-                    data: new FormData( form ),
-                    type:"post",
-                    processData: false,
-                    contentType: false,
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        alert(xhr.status);
-                        alert(thrownError);
-                    },
-                    beforeSend:function(){
-
-                    },
-                    success:function(resp){
-                        $.pjax.reload({container: '#file-'+resp.id, async: false});
-                    },complete:function(jqXHR, textStatus){
-
-                    }
-                });
-                return false;
-            });
-
-            $(".open-add-user").on("click",function(){
-                $(this).parent().find(".add-user").toggle( "slide" )
-            });
-
-            $(".return-users").on("click",function(){
-                $(this).parents(".add-user").toggle( "slide" )
-            });
-
-            $(".open-add-file").on("click",function(){
-                $(this).parent().find(".add-file").toggle( "slide" )
-            });
-
-            $(".return-files").on("click",function(){
-                $(this).parents(".add-file").toggle( "slide" )
-            });
-        });           
+    });  
+        
+        
+        
+    
         
 JS
    );

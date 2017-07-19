@@ -49,9 +49,9 @@ use yii\helpers\Url;
                     $user = new backend\models\ModuloPostHasUsuario();
                     $user->modulo_post_mod_post_id = $model->mod_post_id;
                     $form = ActiveForm::begin([
-                        'options'=>['class'=>'form-usuario'],
+                        'id' => 'usuario-form'.$model->mod_post_id,
                         'enableClientValidation'=>false,
-                        'options' => ['data-pjax' => false ]
+                        'options' =>['class'=>'form-usuario','data-pjax' => false ]
                     ]); ?>
                     
                     <?= $form->field($user, 'usuario_usu_id',['options'=>[
@@ -71,27 +71,15 @@ use yii\helpers\Url;
                 
                 <a class="btn btn-success  waves-effect waves-light open-add-user" style="float:left" ><i class="fa fa-users"></i></a>
                 <img width="40" style="float:left;margin-left: 5px" src="<?= Yii::getAlias('@web'); ?>/admin-theme/images/users/avatar-2.jpg" class="img-circle" data-toggle="tooltip" data-placement="bottom" data-original-title="<?= $model->modPostAsignadoUsu->usu_nombre.' '.$model->modPostAsignadoUsu->usu_apellido;?>">
-                <?php Pjax::begin([
-                        'id' => 'usuario-'.$model->mod_post_id,
-                        'timeout'=>5500,
-                        'enablePushState' => false,
-                        'options'=>['style'=>'float:left']
-                ]);
+                <?php 
                     $dataProvider = new ActiveDataProvider([
                         'query' => backend\models\ModuloPostHasUsuario::find()->where(['modulo_post_mod_post_id'=>$model->mod_post_id]),
                         'pagination' => [
                             'pageSize' => 10,
                         ],
                     ]);
-                    echo ListView::widget([
-                        'dataProvider' => $dataProvider,
-                        'id' => 'list-usuario'.$model->mod_post_id,
-                         'layout' => '{items}',
-                        'itemOptions' => ['class' => 'item','style'=>'float:left;margin-left: 5px'],
-                        'itemView' => '_usuario'
-                    ]);
+                    echo $this->render('Usuarios',['dataProvider'=>$dataProvider,'id'=>$model->mod_post_id]);
                 ?>
-                <?php Pjax::end() ?>
             </div>
 
             <hr class="m-0">
@@ -100,10 +88,10 @@ use yii\helpers\Url;
                     <?php
                     $file = new backend\models\UploadForm();
                     $file->parent_id = $model->mod_post_id;
-                    $form = ActiveForm::begin([
-                        'options'=>['class'=>'form-file'],
-                        'enableClientValidation'=>false,
-                        'options' => ['data-pjax' => false ]
+                    $form = ActiveForm::begin([                       
+                        'id' => 'file-form'.$model->mod_post_id,
+                        'enableClientValidation' => false,
+                        'options' => ['class' => 'form-file','data-pjax' => 0 ]
                     ]); ?>
                     
                     <?= $form->field($file, 'imageFiles',['options'=>[
@@ -121,45 +109,20 @@ use yii\helpers\Url;
                     <?php ActiveForm::end(); ?>
                 </div>
                 <a class="btn btn-purple  waves-effect waves-light open-add-file" style='float:left'><i class="fa fa-upload"></i></a>
-                <?php Pjax::begin([
-                        'id' => 'file-'.$model->mod_post_id,
-                        'timeout'=>5500,
-                        'enablePushState' => false,
-                        'options'=>['style'=>'float:left']
-                ]);
-                    $dataProvider = new ActiveDataProvider([
+                <?php $dataProvider = new ActiveDataProvider([
                         'query' => backend\models\ModuloPostFiles::find()->where(['file_post_id'=>$model->mod_post_id]),
                         'pagination' => [
                             'pageSize' => 10,
                         ],
                     ]);
-                    echo ListView::widget([
-                        'dataProvider' => $dataProvider,
-                        'id' => 'list-file'.$model->mod_post_id,
-                         'layout' => '{items}',
-                        'itemOptions' => ['class' => 'item','style'=>'margin-left: 5px;float:left'],
-                        'itemView' => '_file'
-                    ]);
-                ?>
-                <?php Pjax::end() ?>               
+                    echo $this->render('Files',['dataProvider'=>$dataProvider,'id'=>$model->mod_post_id]);
+                ?>             
             </div>
             
             <div class="panel-footer">
                 <div class="inbox-widget nicescroll" tabindex="5001" style="overflow: hidden; outline: none;">
                     <div id="list-comentario<?= $model->mod_post_id; ?>" class="col-md-12">
                     <?php 
-                     /*Pjax::begin([
-                        'id' => 'comentario'.$model->mod_post_id,
-                        'timeout'=>5500,
-                        'enablePushState' => false
-                        ]);*/
-                    
-                        /*$dataProvider = new ActiveDataProvider([
-                            'query' => backend\models\ModuloPostComentario::find()->where(['com_mod_post_id'=>$model->mod_post_id]),
-                            'pagination' => [
-                                'pageSize' => 10,
-                            ],
-                        ]);*/
                         $comentarios = backend\models\ModuloPostComentario::find()
                                         ->where(['com_mod_post_id'=>$model->mod_post_id])
                                         ->limit(5)  //hasta
@@ -170,15 +133,7 @@ use yii\helpers\Url;
                         foreach ($comentarios as $com){
                                echo $this->render('_comentario',['model'=>$com]);
                         }
-                        /*
-                        echo ListView::widget([
-                            'dataProvider' => $dataProvider,
-                            'id' => 'list-comentario'.$model->mod_post_id,
-                            'itemOptions' => ['class' => 'item'],
-                            'itemView' => '_comentario'
-                        ]);*/
-                        
-                        // Pjax::end() ?>
+                        ?>
                     </div>
                 </div>
                 
