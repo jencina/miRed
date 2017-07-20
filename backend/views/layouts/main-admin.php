@@ -28,7 +28,7 @@ AdminAsset::register($this);
 <body class="fixed-left">
 <?php $this->beginBody() ?>    
     
-    <div id="wrapper">
+    <div id="wrapper" style="overflow: auto">
         
         <!-- Top Bar Start -->
             <div class="topbar">
@@ -181,7 +181,7 @@ AdminAsset::register($this);
          <!-- ============================================================== -->
         <!-- Start right Content here -->
         <!-- ============================================================== -->                      
-        <div class="content-page">
+        <div id="content-page" class="content-page" style="overflow: auto">
             <!-- Start content -->
             <div class="content">
                 <div class="container">

@@ -13,8 +13,11 @@ $this->params['breadcrumbs'][] = $this->title;
 $this->params['tittle'] = 'Bienvenido';
 ?>
 
-<div id="lista-post" class="col-md-7">
-    
+<div id="lista-post" class="col-md-7" >
+    <div class="content"></div>
+    <ul id="pagination" style="display: none">
+        <li></li> 
+    </ul>    
 </div>
 
 <div class="col-md-5">
@@ -72,7 +75,7 @@ $updateUsuarios = \yii\helpers\Json::htmlEncode(Url::to(['modulo/updateusuarios'
 $urlGetPost     = \yii\helpers\Json::htmlEncode(Url::to(['modulo/getpost']));
 
 $this->registerJs(<<<JS
-        
+               
     $(document).on("ready pjax:success",function(e){
         e.preventDefault();  
         $.ajax({
@@ -87,16 +90,22 @@ $this->registerJs(<<<JS
                 //form.find("button").button("loading");
             },
             success:function(resp){
-                $("#lista-post").html(resp);
+                $("#lista-post .content").html(resp);
             },complete:function(jqXHR, textStatus){
 
             }
         });
         return false;
     });
+        
+    $(window).bind('scroll', function() {
+        if($(window).scrollTop() >= $('#lista-post').offset().top + $('#lista-post').outerHeight()-window.innerHeight) {
+            console.log(1);
+        }
+    });
 
     $(document).ajaxComplete(function(){
-
+        
         $("form.form-usuario").on("beforeSubmit",function(e){
             e.preventDefault();
             e.stopImmediatePropagation();
