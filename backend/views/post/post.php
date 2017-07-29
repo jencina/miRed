@@ -1,11 +1,12 @@
 <?php
 use yii\widgets\ListView;
 
+/*
 foreach ($post as $p){
    echo  $this->render('_post',['model'=>$p]);
-}
+}*/
 
-/*
+
 echo ListView::widget([
      'dataProvider' => $post,
      'id'=>'posts',
@@ -13,9 +14,10 @@ echo ListView::widget([
      'itemView' => '_post',
      'layout'=>'{items}{pager}',
      'pager' => [
-         'class' => \kop\y2sp\ScrollPager::className()
-        ]
-]);*/
+          //'class' => \kop\y2sp\ScrollPager::className(),
+           //'triggerText'=>'Cargar Post'
+       ]
+]);
 ?>
 
 

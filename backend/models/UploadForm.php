@@ -19,7 +19,7 @@ class UploadForm extends Model
         return [
             [['tipo'], 'string'],
             [['parent_id','size'], 'integer'],
-            [['imageFiles'], 'file', 'maxSize' => 10 * 1024 * 1024, 'skipOnEmpty' => false, 'maxFiles' => 4],
+            [['imageFiles'], 'file', 'maxSize' => 1000 * 1024 * 1024, 'skipOnEmpty' => false, 'maxFiles' => 4],
         ];
     }
     

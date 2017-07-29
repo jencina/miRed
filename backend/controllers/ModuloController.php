@@ -31,16 +31,26 @@ class ModuloController extends Controller
     }
     
     public function actionGetpost(){
-        
+                /*
+                $limit  = Yii::$app->request->get('limit');
+                $offset = Yii::$app->request->get('offset');    
+                
+                
                 $post = \backend\models\ModuloPost::find()
                 ->where(['mod_activo'=>1])
                 ->andWhere(['or',['mod_usu_id' => Yii::$app->user->id],['mod_post_asignado_usu_id' => Yii::$app->user->id]])
-                ->limit(5)  //hasta
-                ->offset(1) //desde
+                ->limit($limit)  //hasta
+                ->offset($offset) //desde
                 ->orderBy([ 'mod_post_fechamodificacion' => SORT_DESC])
                 ->all();
-
-                /*
+                
+                $count = \backend\models\ModuloPost::find()
+                ->where(['mod_activo'=>1])
+                ->andWhere(['or',['mod_usu_id' => Yii::$app->user->id],['mod_post_asignado_usu_id' => Yii::$app->user->id]])
+                ->count('*');
+                */
+                
+                
                 $post = new ActiveDataProvider([
                     'query' => \backend\models\ModuloPost::find()
                         ->where(['mod_activo'=>1])
@@ -49,9 +59,16 @@ class ModuloController extends Controller
                     'pagination' => [
                         'pageSize' => 5,
                     ],
-                ]);*/
+                ]);
 
-               // echo json_encode($this->renderAjax('//post/post',['post'=>$post]));
+                /*echo json_encode(
+                        [
+                            'data'=> $this->renderAjax('//post/post',['post'=>$post]),
+                            'li'  => \yii\bootstrap\Html::a('',['modulo/getpost','limit'=>$limit,'offset'=>$offset+$limit])
+                        ]
+                        
+                        
+                        );*/
                 return  $this->renderAjax('//post/post',['post'=>$post]);
         //exit;
 

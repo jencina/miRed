@@ -107,6 +107,14 @@ use yii\helpers\Url;
                         ])->fileInput(['class'=>'form-control'])->label(false); ?>
                     <?= $form->field($file, 'parent_id')->hiddenInput()->label(false);?>
                     <?php ActiveForm::end(); ?>
+                    
+                    <div class="progress progress-sm">
+                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+                    </div>
+                    
+                    
+                    
+                    
                 </div>
                 <a class="btn btn-purple  waves-effect waves-light open-add-file" style='float:left'><i class="fa fa-upload"></i></a>
                 <?php $dataProvider = new ActiveDataProvider([
