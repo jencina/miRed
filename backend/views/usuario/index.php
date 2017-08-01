@@ -100,10 +100,8 @@ $this->registerJs(<<<JS
         //var url = $("#pagination li").last().children().attr("href");
         $.ajax({
             url: $urlGetPost,
-            //url: url,
             type:'post',
             //dataType:'json',
-            //data:$(this).serialize(),
             error:function(){
                 //form.find("button").button("reset");
             },
@@ -112,16 +110,39 @@ $this->registerJs(<<<JS
             },
             success:function(resp){
                 $("#lista-post .content").append(resp);
-                //$("#lista-post .content").append(resp.data);
-                //$("#pagination").append("<li>"+resp.li+"</li>");
             },complete:function(jqXHR, textStatus){
-                //$(window).on('scroll');
+        
             }
         });
         return false;
     }    
 
     $(document).ajaxComplete(function(){
+        $("form.form-comentario").on("beforeSubmit",function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            var form = $(this);
+             $.ajax({
+                url: $urlFormModulo,
+                type:'post',
+                dataType:'json',
+                data: form.serialize(),
+                error:function(){
+                    form.find("button").button("reset");
+                },
+                beforeSend:function(){
+                   form.find("button").button("loading");
+                },
+                success:function(resp){
+                    $("#list-comentario"+resp.id).append(resp.coment);
+                },complete:function(jqXHR, textStatus){
+                    form[0].reset();
+                    form.find("button").button("reset");
+                }
+            });
+            return false;
+        });
         
         $("form.form-usuario").on("beforeSubmit",function(e){
             e.preventDefault();
@@ -149,32 +170,6 @@ $this->registerJs(<<<JS
             return false;
         });
 
-        $("form.form-comentario").on("beforeSubmit",function(e){
-            e.preventDefault();
-            e.stopImmediatePropagation();
-
-            var form = $(this);
-             $.ajax({
-                url: $urlFormModulo,
-                type:'post',
-                dataType:'json',
-                data: form.serialize(),
-                error:function(){
-                    form.find("button").button("reset");
-                },
-                beforeSend:function(){
-                   form.find("button").button("loading");
-                },
-                success:function(resp){
-                    $("#list-comentario"+resp.id).append(resp.coment);
-                },complete:function(jqXHR, textStatus){
-                    form.find("input.comentario").val("");
-                    form.find("button").button("reset");
-                }
-            });
-            return false;
-        });
-
         $("form.form-file").on("beforeSubmit",function(e){
             e.preventDefault();
             e.stopImmediatePropagation();
@@ -188,27 +183,29 @@ $this->registerJs(<<<JS
                     form.next().children().attr("style","width:"+percentVal);
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
-
+                    form.find("button.upload-files").button("reset");
+                    form.find("button.return-files").attr("disabled",false);
+                    form[0].reset();
+                    form.next().children().attr("style","width:0%");
+                    form.parent().toggle( "slide" ); 
+                    $.Notification.notify("error","right-bottom","Subir Archivo","Algo ocurrio al subir el archivo");
                 },
                 beforeSend:function(){
-
+                    form.find("button.upload-files").button("loading");
+                    form.find("button.return-files").attr("disabled",true);
                 },
                 success:function(resp){
                     updateFiles(resp.id);
                 },complete:function(jqXHR, textStatus){
-        
+                    form.find("button.upload-files").button("reset");
+                    form.find("button.return-files").attr("disabled",false);
+                    form[0].reset();
+                    form.next().children().attr("style","width:0%");
+                    
+                    form.parent().toggle( "slide" );        
+                    $.Notification.notify("success","right-bottom","Subir Archivo","Archivo subido correctamente!");
                 }
             });
-        
-            /*
-            var form = $(this);
-            $.ajax({
-                
-                data: new FormData( form[0] ),
-                processData: false,
-                contentType: false,
-                
-            });*/
             return false;
         });
 
@@ -240,20 +237,18 @@ $this->registerJs(<<<JS
             $.ajax({
                 url: $updateFile,
                 type:'post',
-                //dataType:"json",
-                data: {id:id},
-                
+                data: {id:id},               
                 error: function (xhr, ajaxOptions, thrownError) {
-                   // alert(xhr.status);
-                   // alert(thrownError);
+                    $.Notification.notify("error","right-bottom","Update Archivos","Algo ocurrio al actualizar lista de archivos");
+                    $("#bg-default"+id).find("a.open-add-file").button("reset");
                 },
                 beforeSend:function(){
-
+                    $("#bg-default"+id).find("a.open-add-file").button("loading");
                 },
                 success:function(resp){
                     $("#list-file"+id).replaceWith(resp);
                 },complete:function(jqXHR, textStatus){
-
+                    $("#bg-default"+id).find("a.open-add-file").button("reset");
                 }
             });
             return false;
@@ -263,11 +258,9 @@ $this->registerJs(<<<JS
             $.ajax({
                 url: $updateUsuarios,
                 type:'post',
-                //dataType:"json",
                 data: {id:id},
                 error: function (xhr, ajaxOptions, thrownError) {
-                   // alert(xhr.status);
-                   // alert(thrownError);
+        
                 },
                 beforeSend:function(){
 
@@ -280,13 +273,8 @@ $this->registerJs(<<<JS
             });
             return false;
         }
-        
     });  
-        
-        
-        
-    
-        
+          
 JS
    );
 

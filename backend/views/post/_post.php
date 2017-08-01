@@ -97,12 +97,12 @@ use yii\helpers\Url;
                     <?= $form->field($file, 'imageFiles',['options'=>[
                         'class'=>'input-group','style'=>'min-height: 100%'],                
                         'template'=>''
-                        . '<span class="input-group-btn">'
-                        . '<button type="button" class="btn waves-effect waves-light btn-danger return-files" ><i class="fa fa-mail-reply"></i></button>'
+                        . '<span class="input-group-btn">'   
+                        . '<button type="button" class="btn waves-effect waves-light btn-danger return-files"><i class="fa fa-mail-reply"></i></button>'
                         . '</span>'
                         .'{input}'
                         . '<span class="input-group-btn">'
-                        . '<button type="submit" class="btn waves-effect waves-light btn-primary"><i class="fa fa-upload"></i></button>'
+                        . '<button type="submit" class="btn waves-effect waves-light btn-primary upload-files"><i class="fa fa-upload"></i></button>'
                         . '</span>'
                         ])->fileInput(['class'=>'form-control'])->label(false); ?>
                     <?= $form->field($file, 'parent_id')->hiddenInput()->label(false);?>
@@ -111,12 +111,8 @@ use yii\helpers\Url;
                     <div class="progress progress-sm">
                         <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
                     </div>
-                    
-                    
-                    
-                    
                 </div>
-                <a class="btn btn-purple  waves-effect waves-light open-add-file" style='float:left'><i class="fa fa-upload"></i></a>
+                <a class="btn btn-purple  waves-effect waves-light open-add-file" data-loading-text='<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>' style='float:left'><i class="fa fa-upload"></i></a>
                 <?php $dataProvider = new ActiveDataProvider([
                         'query' => backend\models\ModuloPostFiles::find()->where(['file_post_id'=>$model->mod_post_id]),
                         'pagination' => [
