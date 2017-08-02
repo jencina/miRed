@@ -113,8 +113,6 @@ class ModuloController extends Controller
                 ]);
                 exit; 
             }
-            //print_r($_POST);
-            //exit;
             
             echo json_encode([
                 'status'=>'false',
@@ -172,7 +170,16 @@ class ModuloController extends Controller
                 'modulo_post_mod_post_id'=> $model->modulo_post_mod_post_id,
                 'usuario_usu_id'         => $model->usuario_usu_id]);
             
-            if(!$exist){
+            
+            
+            if($exist){
+                echo json_encode([
+                    'status'=>'failed',
+                    'msj'   => 'Usuario seleccionado ya se encuentra asignado.'
+                ]);
+                exit;
+                
+            }else{
                 if($model->save()){
                     echo json_encode([
                         'status'=> 'success',
@@ -247,5 +254,17 @@ class ModuloController extends Controller
         ]);
         
         return $this->renderAjax('//post/Usuarios',['dataProvider'=>$dataProvider,'id'=>$id]);
+    }
+    
+    public function actionUpdatepost(){
+        $id = Yii::$app->request->post('id');
+        $post   = \backend\models\ModuloPost::findOne(['mod_post_id'=>$id]);
+        $modulo = $this->findModel($post->mod_id);       
+        $model  = new \backend\models\ModuloPostHasModuloRegistro();
+        
+        echo json_encode([
+            'status'=>'success',
+            'div'=>$this->renderAjax('modulo',['modulo'=>$modulo,'model'=>$model,'post'=>$post])
+        ]);
     }
 }

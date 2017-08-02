@@ -16,7 +16,10 @@ use yii\helpers\Url;
             </h3>
 
             <div class="portlet-widgets">
+               
                 <a data-toggle="collapse" data-parent="#accordion1" href="#bg-default<?= $model->mod_post_id ?>" class="" aria-expanded="true"><i class="ion-minus-round"></i></a>
+                <span class="divider"></span>
+                <a href="" id="btn-edit<?= $model->mod_post_id ?>" class="post-edit" data-id="<?= $model->mod_post_id ?>" ><i class="ion-compose"></i></a>
                 <span class="divider"></span>
                 <a href="#" data-toggle="remove"><i class="ion-close-round"></i></a>
             </div>
@@ -62,14 +65,14 @@ use yii\helpers\Url;
                         . '</span>'
                         .'{input}'
                         . '<span class="input-group-btn">'
-                        . '<button type="submit" class="btn waves-effect waves-light btn-primary"><i class="fa fa-plus"></i></button>'
+                        . '<button type="submit" class="btn waves-effect waves-light btn-primary add-users"><i class="fa fa-plus"></i></button>'
                         . '</span>'
                         ])->dropDownList(ArrayHelper::map(backend\models\Usuario::find()->all(), 'usu_id', 'usu_nombre'),['tag' => null,'class' => 'form-control'])->label(false); ?>
                     <?= $form->field($user, 'modulo_post_mod_post_id')->hiddenInput()->label(false);?>
                     <?php ActiveForm::end(); ?>
                 </div>
                 
-                <a class="btn btn-success  waves-effect waves-light open-add-user" style="float:left" ><i class="fa fa-users"></i></a>
+                <a class="btn btn-success  waves-effect waves-light open-add-user" data-loading-text='<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>' style="float:left" ><i class="fa fa-users"></i></a>
                 <img width="40" style="float:left;margin-left: 5px" src="<?= Yii::getAlias('@web'); ?>/admin-theme/images/users/avatar-2.jpg" class="img-circle" data-toggle="tooltip" data-placement="bottom" data-original-title="<?= $model->modPostAsignadoUsu->usu_nombre.' '.$model->modPostAsignadoUsu->usu_apellido;?>">
                 <?php 
                     $dataProvider = new ActiveDataProvider([

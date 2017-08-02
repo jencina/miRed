@@ -23,7 +23,7 @@ if($modulo->moduloRegistros){
            case 2:
                echo $form->field($model, 'contenido')->textInput(['maxlength' => true]);
                break;
-       }   
+        }   
     endforeach;
 }
 

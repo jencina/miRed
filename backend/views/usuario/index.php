@@ -73,6 +73,7 @@ $updateFile     = \yii\helpers\Json::htmlEncode(Url::to(['modulo/updatefiles']))
 $updateUsuarios = \yii\helpers\Json::htmlEncode(Url::to(['modulo/updateusuarios']));
 
 $urlGetPost     = \yii\helpers\Json::htmlEncode(Url::to(['modulo/getpost']));
+$updatePost     = \yii\helpers\Json::htmlEncode(Url::to(['modulo/updatepost']));
 
 $this->registerJs(<<<JS
    /* jquery.form.min.js */
@@ -86,7 +87,6 @@ $this->registerJs(<<<JS
     $(document).on("ready pjax:success",function(e){
         e.preventDefault();  
         loadPosts();
-        return false;
     });
         
     /*$(window).bind('scroll', function() {
@@ -116,8 +116,38 @@ $this->registerJs(<<<JS
         });
         return false;
     }    
+        
+    
 
     $(document).ajaxComplete(function(){
+       
+        $('[data-toggle="tooltip"]').tooltip();
+        
+        $("a.post-edit").on("click",function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+        
+            var id = $(this).attr("data-id");
+
+            $.ajax({
+                url: $updatePost,
+                type:'post',
+                dataType:'json',
+                data:{id:id},
+                beforeSend:function(){
+                   $("#modulo-modal").modal("toggle");
+                },
+                success:function(resp){
+                   $("#modulo-modal .modal-body").html(resp.div);
+                },complete:function(jqXHR, textStatus){
+        
+                }
+
+            });
+
+            return false;
+        });
+        
         $("form.form-comentario").on("beforeSubmit",function(e){
             e.preventDefault();
             e.stopImmediatePropagation();
@@ -155,16 +185,30 @@ $this->registerJs(<<<JS
                 dataType:'json',
                 data: form.serialize(),
                 error: function (xhr, ajaxOptions, thrownError) {
-                    alert(xhr.status);
-                    alert(thrownError);
+                    form.find("button.add-users").button("reset");
+                    form.find("button.return-users").attr("disabled",false);
+                    form[0].reset();
+                    form.parent().toggle( "slide" ); 
+                    $.Notification.notify("error","right-bottom","Agregar Usuario","Algo ocurrio al agregar usuario");
                 },
                 beforeSend:function(){
-
+                    form.find("button.add-users").button("loading");
+                    form.find("button.return-users").attr("disabled",true);
                 },
                 success:function(resp){
-                   updateUsuarios(resp.id);
+                   if(resp.status == "success"){
+                      updateUsuarios(resp.id);
+                   }
                 },complete:function(jqXHR, textStatus){
-
+                    form.find("button.add-users").button("reset");
+                    form.find("button.return-users").attr("disabled",false);
+                    form[0].reset();
+                    if(jqXHR.responseJSON.status == "success"){
+                        form.parent().toggle( "slide" );        
+                        $.Notification.notify("success","right-bottom","Agregar Usuario","Usuario agregado correctamente!");
+                    }else{
+                        $.Notification.notify("error","right-bottom","Agregar Usuario",jqXHR.responseJSON.msj);
+                    }
                 }
             });
             return false;
@@ -260,15 +304,16 @@ $this->registerJs(<<<JS
                 type:'post',
                 data: {id:id},
                 error: function (xhr, ajaxOptions, thrownError) {
-        
+                    $.Notification.notify("error","right-bottom","Update Usuarios","Algo ocurrio al actualizar lista de usuarios");
+                    $("#bg-default"+id).find("a.open-add-user").button("reset");
                 },
                 beforeSend:function(){
-
+                    $("#bg-default"+id).find("a.open-add-user").button("loading");
                 },
                 success:function(resp){
                     $("#list-usuario"+id).replaceWith(resp);
                 },complete:function(jqXHR, textStatus){
-
+                    $("#bg-default"+id).find("a.open-add-user").button("reset");
                 }
             });
             return false;
