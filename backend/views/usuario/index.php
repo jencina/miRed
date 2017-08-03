@@ -133,7 +133,7 @@ $this->registerJs(<<<JS
                 url: $updatePost,
                 type:'post',
                 dataType:'json',
-                data:{id:id},
+                data:{mod_post_id:id},
                 beforeSend:function(){
                    $("#modulo-modal").modal("toggle");
                 },

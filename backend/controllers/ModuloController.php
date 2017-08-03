@@ -257,14 +257,22 @@ class ModuloController extends Controller
     }
     
     public function actionUpdatepost(){
-        $id = Yii::$app->request->post('id');
-        $post   = \backend\models\ModuloPost::findOne(['mod_post_id'=>$id]);
-        $modulo = $this->findModel($post->mod_id);       
-        $model  = new \backend\models\ModuloPostHasModuloRegistro();
+        $id      = Yii::$app->request->post('mod_post_id');
+        $model   = \backend\models\ModuloPost::findOne(['mod_post_id'=>$id]);
+        $modulo  = $this->findModel($model->mod_id);   
+        
+        if ($model->load(Yii::$app->request->post())) {
+            print_r($_POST);
+            print_r($model);
+            exit;
+            
+        }
+        
+            
         
         echo json_encode([
             'status'=>'success',
-            'div'=>$this->renderAjax('modulo',['modulo'=>$modulo,'model'=>$model,'post'=>$post])
+            'div'=>$this->renderAjax('updatePost',['model'=>$modulo,'post'=>$model])
         ]);
     }
 }
