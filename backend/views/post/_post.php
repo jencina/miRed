@@ -8,7 +8,7 @@ use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
 ?>
 
-<div class="col-lg-12 posts">
+<div id="post-<?= $model->mod_post_id ?>" class="col-lg-12 posts">
     <div class="portlet panel panel-<?= $model->mod->mod_color ?> panel-border">
         <div class="portlet-heading portlet-default panel-heading">
             <h3 class="portlet-title text-dark">

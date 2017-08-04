@@ -31,7 +31,7 @@ class ModuloController extends Controller
     }
     
     public function actionGetpost(){
-                /*
+               
                 $limit  = Yii::$app->request->get('limit');
                 $offset = Yii::$app->request->get('offset');    
                 
@@ -48,9 +48,9 @@ class ModuloController extends Controller
                 ->where(['mod_activo'=>1])
                 ->andWhere(['or',['mod_usu_id' => Yii::$app->user->id],['mod_post_asignado_usu_id' => Yii::$app->user->id]])
                 ->count('*');
-                */
                 
                 
+                /*
                 $post = new ActiveDataProvider([
                     'query' => \backend\models\ModuloPost::find()
                         ->where(['mod_activo'=>1])
@@ -59,7 +59,7 @@ class ModuloController extends Controller
                     'pagination' => [
                         'pageSize' => 5,
                     ],
-                ]);
+                ]);*/
 
                 /*echo json_encode(
                         [
@@ -272,13 +272,43 @@ class ModuloController extends Controller
                         $mod->update();
                     } 
                 }
+                $notificacion = new \backend\models\Notificacion();
+                $notificacion->not_fechacreacion     = date("Y-m-d H:i:s");
+                $notificacion->not_fechamodificacion = date("Y-m-d H:i:s");
+                $notificacion->not_usu_id            = Yii::$app->user->id;
+                $notificacion->not_usu_id_para       = $model->mod_post_asignado_usu_id;
+                $notificacion->not_titulo            = 'ha actualizado el post';
+                $notificacion->not_tipo              = 1;
+                $notificacion->not_post_id           = $model->mod_post_id;
+                $notificacion->insert();
+                
+                if($model->moduloPostHasUsuarios){
+                    foreach ($model->moduloPostHasUsuarios as $usu){
+                        $notificacion = new \backend\models\Notificacion();
+                        $notificacion->not_fechacreacion     = date("Y-m-d H:i:s");
+                        $notificacion->not_fechamodificacion = date("Y-m-d H:i:s");
+                        $notificacion->not_usu_id            = Yii::$app->user->id;
+                        $notificacion->not_usu_id_para       = $usu->usuario_usu_id;
+                        $notificacion->not_titulo            = 'ha actualizado el post';
+                        $notificacion->not_tipo              = 1;
+                        $notificacion->not_post_id           = $model->mod_post_id;
+                        $notificacion->insert();
+                    }
+                }
+                
+                echo json_encode([
+                    'status'=> 'save',
+                    'id' => $model->mod_post_id,
+                    'div'=>$this->renderAjax('//post/_post',['model'=>$model])
+                ]);
+                exit;
             }        
         }
         
-
         echo json_encode([
             'status'=>'success',
             'div'=>$this->renderAjax('updatePost',['model'=>$modulo,'post'=>$model])
         ]);
     }
+
 }

@@ -145,11 +145,12 @@ AdminAsset::register($this);
                             $menu[] = ['label'=>'MODULOS','options'=> ['class'=>'menu-title']];
                             $modulos = \backend\models\Modulo::find()->where(['emp_id'=>Yii::$app->user->identity->emp_id,'mod_activo'=>1])->all();
                             foreach ($modulos as $mod){
-                                $menu[] = ['label' => '<span><i class="fa fa-circle-o text-'.$mod->mod_color.'"></i> '.Yii::t('app', $mod->mod_nombre).'</span>','icon'=>'fa-home','options'=> ['id'=>'create-modulo'.$mod->mod_id,'data-id'=>$mod->mod_id,'class'=>'has-sub modulo'], 'linkTemplate'=>'<a href="{url}">aa{label}</a>', 'url' => "#modulo-modal"];
+                                $menu[] = ['label' => '<i class="fa fa-circle-o text-'.$mod->mod_color.'"></i> '.Yii::t('app', $mod->mod_nombre),'options'=> ['id'=>'create-modulo'.$mod->mod_id,'data-id'=>$mod->mod_id,'class'=>'has-sub modulo'], 'url' => "#modulo-modal"];
                             }
                             
                             //********** GRUPOS *************
                             $menu[] = ['label'=>'GRUPOS','options'=> ['class'=>'menu-title']];
+                            $menu[] = ['label' =>'<i class="fa fa-plus"></i><span> Nuevo Grupo','options'=> ['id'=>'create-grupo','class'=>'has-sub'], 'url' => "#grupo-modal"];
                             
                             echo \yii\widgets\Menu::widget([
                                     'options' => ['class' => ''],
@@ -227,6 +228,19 @@ AdminAsset::register($this);
             </div>
         </div>
     </div><!-- /.modal -->
+    
+    <div id="grupo-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Grupo Nuevo</h4>
+                </div>
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div><!-- /.modal -->
 
 
 <?php
@@ -238,6 +252,7 @@ AdminAsset::register($this);
 <?php
 
 $urlFormModulo  = \yii\helpers\Json::htmlEncode(Url::to(['modulo/loadmodulo']));
+$urlFormGrupo  = \yii\helpers\Json::htmlEncode(Url::to(['grupo/create']));
 $this->registerJs(<<<JS
 
         $("li.modulo").on('click',function(e){
@@ -248,6 +263,25 @@ $this->registerJs(<<<JS
                 type:'post',
                 dataType:'json',
                 data:{mod_id:id},
+                beforeSend:function(){
+                   $("#modulo-modal").modal("toggle");
+                },
+                success:function(resp){
+                   $("#modulo-modal .modal-body").html(resp.div);
+                },complete:function(jqXHR, textStatus){
+        
+                }
+            });
+            
+            return false;
+        });
+        
+        $("li#create-grupo").on('click',function(e){
+            e.preventDefault();
+            $.ajax({
+                url: $urlFormGrupo,
+                type:'post',
+                dataType:'json',
                 beforeSend:function(){
                    $("#modulo-modal").modal("toggle");
                 },

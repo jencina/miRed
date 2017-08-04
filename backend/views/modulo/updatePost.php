@@ -53,9 +53,6 @@ $this->registerJs(<<<JS
             data:$(this).serialize(),
             error:function(){
                 $("#btn-guardar").button('reset');
-               
-                console.log('error');
-                
                 $.notify({
                     title: "Nuevo Modulo",
                     text: "Hubo un error al generar Post.",
@@ -78,11 +75,12 @@ $this->registerJs(<<<JS
                 if(resp.status == 'false'){
                     $("#modulo-modal .modulo-form").html(resp.div);
                 }else{
-                   $("#modulo-modal").modal("toggle");
+                    $("#post-"+resp.id).remove();
+                    $("#lista-post .content").prepend(resp.div);
+                    $("#modulo-modal").modal("toggle");
                 }
             },complete:function(jqXHR, textStatus){
                 if(jqXHR.responseJSON.status == 'save'){
-                    $.pjax.reload({container: '#post-list' , async: false});
                     swal({ title: "Nuevo Modulo", text: "Post generado con exito.", type: "success" });
                 }
                 $("#btn-guardar").button('reset');
