@@ -153,22 +153,21 @@ use yii\helpers\Url;
                     'options'=>['class'=>'form-comentario','data-pjax' => false ]
                 ]); ?>
                 <div class="row">
+                    <div class="col-lg-12">
                     <?php 
                     $fieldOptions = [
-                        'options' => ['class' => ''],
+                        'options' => ['class' => 'm-t-12'],
                         'inputTemplate' => ""
-                        . '<div class="col-sm-9 todo-inputbar">'
                         . "{input}"
-                        . "</div>"
+                        //. '<span class="input-group-btn">'
+                        //. '<button type="submit" class="btn waves-effect waves-light btn-primary">Submit</button>'
+                        //. '</span>'
                     ];?>
                     
-                    <?= $form->field($comentario, 'com_comentario',$fieldOptions)->textInput(['class'=>'form-control comentario', 'placeholder'=>'Comentario...'])->label(false); ?>
+                    <?= $form->field($comentario, 'com_comentario',$fieldOptions)->textarea(['class'=>' comentario', 'placeholder'=>'Comentario...'])->label(false); ?>
                     <?= $form->field($comentario, 'com_mod_post_id')->hiddenInput()->label(false) ?>
-                    
-                    <div class="col-sm-3 todo-send">
-                        <button class="btn-primary btn-md btn-block btn waves-effect waves-light" type="submit" id="todo-btn-submit">Add</button>
-                    </div>
                 </div>
+                    </div>
                 <?php ActiveForm::end(); ?>
             </div>
         </div>

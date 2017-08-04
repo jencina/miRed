@@ -262,14 +262,20 @@ class ModuloController extends Controller
         $modulo  = $this->findModel($model->mod_id);   
         
         if ($model->load(Yii::$app->request->post())) {
-            print_r($_POST);
-            print_r($model);
-            exit;
-            
+            $model->mod_post_titulo = 'Ha modificado';
+            $model->mod_post_fechamodificacion = date("Y-m-d H:i:s");
+            if($model->save()){
+                if($_POST['ModuloPostHasModuloRegistro']){
+                    foreach ($_POST['ModuloPostHasModuloRegistro'] as $index => $reg){
+                        $mod  = \backend\models\ModuloPostHasModuloRegistro::findOne(['mod_post_id'=>$model->mod_post_id,'mod_reg_id'=>$index]);
+                        $mod->contenido  = $reg;
+                        $mod->update();
+                    } 
+                }
+            }        
         }
         
-            
-        
+
         echo json_encode([
             'status'=>'success',
             'div'=>$this->renderAjax('updatePost',['model'=>$modulo,'post'=>$model])
