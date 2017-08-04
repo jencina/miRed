@@ -62,6 +62,13 @@ $this->params['tittle'] = 'Bienvenido';
             </div>
         </div>
     </div>
+    
+    <div class="col-md-12">
+        <div class="card-box">
+            <div id="calendar"></div>
+        </div>
+    </div> <!-- end col -->
+    
 </div>
     
 <?php
@@ -74,6 +81,12 @@ $updateUsuarios = \yii\helpers\Json::htmlEncode(Url::to(['modulo/updateusuarios'
 
 $urlGetPost     = \yii\helpers\Json::htmlEncode(Url::to(['modulo/getpost']));
 $updatePost     = \yii\helpers\Json::htmlEncode(Url::to(['modulo/updatepost']));
+
+
+$this->registerCssFile(Yii::getAlias('@web') . '/plugins/moment/moment.js', ['depends' => [yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerCssFile(Yii::getAlias('@web') . '/plugins/fullcalendar/dist/fullcalendar.min.js', ['depends' => [yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerCssFile(Yii::getAlias('@web') . '/plugins/jquery.fullcalendar.js', ['depends' => [yii\bootstrap\BootstrapAsset::className()]]);
+
 
 $this->registerJs(<<<JS
    /* jquery.form.min.js */
