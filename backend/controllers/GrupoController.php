@@ -30,6 +30,28 @@ class GrupoController extends Controller
             ],
         ];
     }
+    
+    public function actionGetpost(){
+               
+                $limit  = Yii::$app->request->get('limit');
+                $offset = Yii::$app->request->get('offset');    
+                
+                $post = \backend\models\ModuloPost::find()
+                ->join('inner join','modulo_post_has_grupo', 'modulo_post_has_grupo.mod_post_id = modulo_post.mod_post_id')
+                ->where(['mod_activo'=>1])
+                ->andWhere(['or',['mod_usu_id' => Yii::$app->user->id],['mod_post_asignado_usu_id' => Yii::$app->user->id]])
+                ->limit($limit)  //hasta
+                ->offset($offset) //desde
+                ->orderBy([ 'mod_post_fechamodificacion' => SORT_DESC])
+                ->all();
+                
+                $count = \backend\models\ModuloPost::find()
+                ->where(['mod_activo'=>1])
+                ->andWhere(['or',['mod_usu_id' => Yii::$app->user->id],['mod_post_asignado_usu_id' => Yii::$app->user->id]])
+                ->count('*');
+
+                return  $this->renderAjax('//post/post',['post'=>$post]);
+    }
 
     /**
      * Lists all Grupo models.

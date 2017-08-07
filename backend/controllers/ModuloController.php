@@ -35,8 +35,8 @@ class ModuloController extends Controller
                 $limit  = Yii::$app->request->get('limit');
                 $offset = Yii::$app->request->get('offset');    
                 
-                
                 $post = \backend\models\ModuloPost::find()
+                //->join('inner join','modulo_post_has_grupo', 'modulo_post_has_grupo.mod_post_id = modulo_post.mod_post_id')
                 ->where(['mod_activo'=>1])
                 ->andWhere(['or',['mod_usu_id' => Yii::$app->user->id],['mod_post_asignado_usu_id' => Yii::$app->user->id]])
                 ->limit($limit)  //hasta
@@ -80,8 +80,10 @@ class ModuloController extends Controller
         $model  = new \backend\models\ModuloPostHasModuloRegistro();
         $modulo = $this->findModel($mod_id);
         $post   = new \backend\models\ModuloPost();
+        $grupo  = Yii::$app->request->get('grupo');
                
         if($post->load(Yii::$app->request->post())){
+            
             $post->mod_post_fechacreacion     =  date("Y-m-d H:i:s");
             $post->mod_post_fechamodificacion =  date("Y-m-d H:i:s");
             $post->mod_post_titulo            =  'Ha creado';
@@ -90,13 +92,23 @@ class ModuloController extends Controller
             $post->mod_usu_id                 =  Yii::$app->user->id;
             if($post->save()){
              
-                foreach ($_POST['ModuloPostHasModuloRegistro'] as $index => $reg){
-                    $mod  = new \backend\models\ModuloPostHasModuloRegistro();
-                    $mod->mod_post_id = $post->mod_post_id;
-                    $mod->mod_reg_id  = $index;
-                    $mod->contenido   = $reg;
-                    $mod->insert(); 
-                } 
+                if(Yii::$app->request->post('ModuloPostHasModuloRegistro')){
+                    foreach (Yii::$app->request->post('ModuloPostHasModuloRegistro') as $index => $reg){
+                        $mod  = new \backend\models\ModuloPostHasModuloRegistro();
+                        $mod->mod_post_id = $post->mod_post_id;
+                        $mod->mod_reg_id  = $index;
+                        $mod->contenido   = $reg;
+                        $mod->insert(); 
+                    } 
+                }
+                
+                if(Yii::$app->request->post('ModuloPostHasGrupo')){
+                    $grup = new \backend\models\ModuloPostHasGrupo();
+                    if($grup->load(Yii::$app->request->post())){
+                        $grup->mod_post_id = $post->mod_post_id;
+                    }
+                    $grup->insert();
+                }
                 
                 $notificacion = new \backend\models\Notificacion();
                 $notificacion->not_fechacreacion     = date("Y-m-d H:i:s");
@@ -123,7 +135,7 @@ class ModuloController extends Controller
 
         echo json_encode([
             'status'=>'success',
-            'div'=>$this->renderAjax('modulo',['modulo'=>$modulo,'model'=>$model,'post'=>$post])
+            'div'=>$this->renderAjax('modulo',['modulo'=>$modulo,'model'=>$model,'post'=>$post,'grupo'=>$grupo])
         ]);
     }
     

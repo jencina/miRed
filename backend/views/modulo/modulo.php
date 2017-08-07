@@ -5,6 +5,8 @@ use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 ?>
 
+
+
 <?php 
 
 $form = ActiveForm::begin([
@@ -32,9 +34,18 @@ echo $form->field($post, 'mod_post_asignado_usu_id')
 
 echo \yii\bootstrap\Html::hiddenInput('mod_id', $modulo->mod_id);
 
+if(isset($grupo)){
+    if($grupo > 0){
+        $grup = new backend\models\ModuloPostHasGrupo();
+        $grup->grupo_id = $grupo;
+        echo $form->field($grup, 'grupo_id')->hiddenInput()->label(false);
+    }
+}
+
 echo '<div class="modal-footer">';
 echo Html::submitButton('Guardar', ['id'=>'btn-guardar','class'=> 'btn btn-primary']);
 echo '</div>';
+
 
 
 ActiveForm::end();

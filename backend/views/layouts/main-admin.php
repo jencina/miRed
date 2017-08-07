@@ -223,6 +223,17 @@ AdminAsset::register($this);
     
     <div id="modulo-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
         <div class="modal-dialog">
+            
+            <?php if(isset($this->params['grupo'])){
+                    if($this->params['grupo'] > 0){ ?>
+                        <div class="ribbon" style="left: -7px;top: -9px;">
+                            <span style="line-height:25px;background:linear-gradient(<?= $this->params['grupo-model']->grupo_color;?> 0%, <?= $this->params['grupo-model']->grupo_color;?> 100%)"><?= $this->params['grupo-model']->grupo_nombre;?></span>
+                        </div>
+                    <?php }
+                }
+            ?>
+                
+            
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -255,8 +266,15 @@ AdminAsset::register($this);
 ?>
    
 <?php
+$grupo = 0;
 
-$urlFormModulo  = \yii\helpers\Json::htmlEncode(Url::to(['modulo/loadmodulo']));
+if(isset($this->params['grupo'])){
+    if($this->params['grupo'] > 0){
+        $grupo = $this->params['grupo'];
+    }
+}
+
+$urlFormModulo  = \yii\helpers\Json::htmlEncode(Url::to(['modulo/loadmodulo','grupo'=>$grupo]));
 $urlFormGrupo  = \yii\helpers\Json::htmlEncode(Url::to(['grupo/create']));
 $this->registerJs(<<<JS
 

@@ -27,4 +27,32 @@ $this->params['tittle'] = 'Grupo';
             </div>
         </div>
     </div>  
+    
+    <div class="col-md-4">
+        <div class="text-center card-box">
+            <div class="member-card">
+                <div class="thumb-xl member-thumb m-b-10 center-block">
+                    <img src="<?= Yii::getAlias('@web'); ?>/admin-theme/images/users/avatar-1.jpg" class="img-circle img-thumbnail" alt="profile-image">
+                </div>
+
+                <div class="">
+                    <h4 class="m-b-5">Mark A. McKnight</h4>
+                    <p class="text-muted">Autor</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center card-box">
+            <div class="member-card">
+                <div class="thumb-xl member-thumb m-b-10 center-block">
+                    <img src="<?= Yii::getAlias('@web'); ?>/admin-theme/images/users/avatar-1.jpg" class="img-circle img-thumbnail" alt="profile-image">
+                </div>
+
+                <div class="">
+                    <h4 class="m-b-5">Mark A. McKnight</h4>
+                    <p class="text-muted">Administrador</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
