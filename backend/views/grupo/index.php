@@ -103,7 +103,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'dataProvider' => $dataProvider,
                             'id' => 'usuarios-emp',
                             'itemOptions' => ['class' => 'item-list'],
-                            'itemView' => '_usuarios',
+                            'itemView' => '//usuario/_usuarios',
                             'layout' => '{items}{pager}',
                             'pager' => [
                             // 'class' => \kop\y2sp\ScrollPager::className(),
