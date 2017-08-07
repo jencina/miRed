@@ -44,17 +44,6 @@ class GrupoController extends Controller
         ]);
     }
 
-    /**
-     * Displays a single Grupo model.
-     * @param string $id
-     * @return mixed
-     */
-    public function actionConfiguracion($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
     
     
 
@@ -96,7 +85,7 @@ class GrupoController extends Controller
      * @param string $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionConfiguracion($id)
     {
         $model = $this->findModel($id);
 
