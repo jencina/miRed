@@ -43,7 +43,7 @@ class Grupo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['emp_id','grup_publico','grupo_nombre','grupo_descripcion'], 'required'],
+            [['emp_id','grup_publico','grupo_nombre','grupo_descripcion','grupo_color'], 'required'],
             [['grup_publico', 'grupo_activo', 'emp_id', 'usu_id_create', 'grupo_admin'], 'integer'],
             [['grupo_fechacreacion', 'grupo_fechamodificacion'], 'safe'],
             [['grupo_nombre'], 'string', 'max' => 100],

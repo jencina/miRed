@@ -52,10 +52,8 @@
     
     #grupo-head-datos div{
         min-height:115px;
-        padding-top: 10px;
     }
     
     #grupo-head-datos div > *{
-        display: inline;
         color:#fff;
     }
