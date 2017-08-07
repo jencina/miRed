@@ -136,7 +136,7 @@ $this->registerJs(<<<JS
         
         $('textarea.comentario').on('keydown', function(e){
             if(e.which == 13) {
-                $(this).parents("form.form-comentario").submit();
+                //$(this).parents("form.form-comentario").submit();
                 e.preventDefault();
             }
         }).on('input', function(){

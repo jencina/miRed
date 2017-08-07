@@ -1,0 +1,61 @@
+    /*************************************************************/
+    /******************        MENU      *************************/
+    /*************************************************************/
+
+    #grupo-menu{
+        margin-top: 10px;
+        padding: 5px 0;
+        margin-left: 20px;
+    }
+    #grupo-menu li{
+        margin-right:15px;
+    }
+
+    #grupo-menu li,#grupo-menu li:hover,#grupo-menu li a:hover{
+        background: none;
+    }
+
+    #grupo-menu li > a{
+        padding: 0;
+        border-bottom: 4px solid transparent;
+        line-height: 25px;
+    }
+
+    #grupo-menu li.active > a,#grupo-menu li a:hover{
+        border-bottom: 4px solid rgba(255,255,255,.3);
+    }
+    
+    /*************************************************************/
+    /******************       HEAD       *************************/
+    /*************************************************************/
+    #group-head{
+        background:#c54c45;
+        min-height: 150px;
+        margin-bottom: 20px;
+    }
+    
+    #grupo-head-line{
+        background: #b74845;
+        height: 40px
+    }
+    
+    #grupo-head-datos{
+        padding-left:140px;
+        position: relative
+    }
+    
+    #grupo-head-datos img{
+        position:absolute;
+        top:-15px;
+        left: 10px;
+    }
+    
+    #grupo-head-datos div{
+        min-height:115px;
+        padding-top: 10px;
+    }
+    
+    #grupo-head-datos div > *{
+        display: inline;
+        color:#fff;
+    }

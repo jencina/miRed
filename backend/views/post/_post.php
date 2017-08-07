@@ -98,16 +98,17 @@ use yii\helpers\Url;
                     ]); ?>
                     
                     <?= $form->field($file, 'imageFiles',['options'=>[
-                        'class'=>'input-group','style'=>'min-height: 100%'],                
-                        'template'=>''
-                        . '<span class="input-group-btn">'   
-                        . '<button type="button" class="btn waves-effect waves-light btn-danger return-files"><i class="fa fa-mail-reply"></i></button>'
-                        . '</span>'
+                        'class'    =>'input-group','style'=>'min-height: 100%'],                
+                        'template' =>''
+                        .'<span class="input-group-btn">'   
+                        .'<button type="button" class="btn waves-effect waves-light btn-danger return-files"><i class="fa fa-mail-reply"></i></button>'
+                        .'</span>'
                         .'{input}'
-                        . '<span class="input-group-btn">'
-                        . '<button type="submit" class="btn waves-effect waves-light btn-primary upload-files"><i class="fa fa-upload"></i></button>'
-                        . '</span>'
+                        .'<span class="input-group-btn">'
+                        .'<button type="submit" class="btn waves-effect waves-light btn-primary upload-files"><i class="fa fa-upload"></i></button>'
+                        .'</span>'
                         ])->fileInput(['class'=>'form-control'])->label(false); ?>
+                    
                     <?= $form->field($file, 'parent_id')->hiddenInput()->label(false);?>
                     <?php ActiveForm::end(); ?>
                     
@@ -159,9 +160,9 @@ use yii\helpers\Url;
                         'options' => ['class' => 'm-t-12'],
                         'inputTemplate' => ""
                         . "{input}"
-                        //. '<span class="input-group-btn">'
-                        //. '<button type="submit" class="btn waves-effect waves-light btn-primary">Submit</button>'
-                        //. '</span>'
+                        . '<span class="input-group-btn">'
+                        . '<button type="submit" class="btn waves-effect waves-light btn-primary">Submit</button>'
+                        . '</span>'
                     ];?>
                     
                     <?= $form->field($comentario, 'com_comentario',$fieldOptions)->textarea(['class'=>' comentario', 'placeholder'=>'Comentario...'])->label(false); ?>

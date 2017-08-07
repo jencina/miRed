@@ -61,16 +61,16 @@ class Grupo extends \yii\db\ActiveRecord
     {
         return [
             'grupo_id' => 'Grupo ID',
-            'grupo_nombre' => 'Grupo Nombre',
-            'grupo_descripcion' => 'Grupo Descripcion',
-            'grup_publico' => 'Grup Publico',
-            'grupo_color' => 'Grupo Color',
-            'grupo_fechacreacion' => 'Grupo Fechacreacion',
-            'grupo_fechamodificacion' => 'Grupo Fechamodificacion',
-            'grupo_activo' => 'Grupo Activo',
-            'emp_id' => 'Emp ID',
+            'grupo_nombre' => 'Nombre',
+            'grupo_descripcion' => 'Descripcion',
+            'grup_publico' => 'Publico',
+            'grupo_color' => 'Color',
+            'grupo_fechacreacion' => 'Fechacreacion',
+            'grupo_fechamodificacion' => 'Fechamodificacion',
+            'grupo_activo' => 'Activo',
+            'emp_id' => 'ID',
             'usu_id_create' => 'Usu Id Create',
-            'grupo_admin' => 'Grupo Admin',
+            'grupo_admin' => 'Administrador',
         ];
     }
 
