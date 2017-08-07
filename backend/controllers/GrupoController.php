@@ -17,6 +17,8 @@ class GrupoController extends Controller
     /**
      * @inheritdoc
      */
+    public $layout = 'main-admin';
+    
     public function behaviors()
     {
         return [
@@ -33,14 +35,12 @@ class GrupoController extends Controller
      * Lists all Grupo models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($id)
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Grupo::find(),
-        ]);
+
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider,
+            'model' => $this->findModel($id),
         ]);
     }
 
@@ -68,13 +68,19 @@ class GrupoController extends Controller
         if ($model->load(Yii::$app->request->post())) {    
             $model->grupo_fechacreacion     = date("Y-m-d H:i:s");
             $model->grupo_fechamodificacion = date("Y-m-d H:i:s");
+            $model->grupo_activo            = 1;
+            $model->grupo_admin             = Yii::$app->user->id;
+            $model->usu_id_create           = Yii::$app->user->id;
+            $model->emp_id                  = Yii::$app->user->identity->emp_id;
+            
             if($model->save()){
                echo json_encode([
                     'status'=>'save'
                 ]); 
                exit;
             }
-        } 
+        }
+        
         echo json_encode([
             'status'=>'success',
             'div'=>$this->renderAjax('create',['model'=>$model])

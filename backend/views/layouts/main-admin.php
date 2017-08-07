@@ -145,12 +145,17 @@ AdminAsset::register($this);
                             $menu[] = ['label'=>'MODULOS','options'=> ['class'=>'menu-title']];
                             $modulos = \backend\models\Modulo::find()->where(['emp_id'=>Yii::$app->user->identity->emp_id,'mod_activo'=>1])->all();
                             foreach ($modulos as $mod){
-                                $menu[] = ['label' => '<i class="fa fa-circle-o text-'.$mod->mod_color.'"></i> '.Yii::t('app', $mod->mod_nombre),'options'=> ['id'=>'create-modulo'.$mod->mod_id,'data-id'=>$mod->mod_id,'class'=>'has-sub modulo'], 'url' => "#modulo-modal"];
+                                $menu[] = ['label' => '<i class="fa fa-circle-o text-'.$mod->mod_color.'"></i> <span>'.Yii::t('app', ucwords(strtolower($mod->mod_nombre))).'</span>','options'=> ['id'=>'create-modulo'.$mod->mod_id,'data-id'=>$mod->mod_id,'class'=>'has-sub modulo'], 'url' => "#modulo-modal"];
                             }
                             
                             //********** GRUPOS *************
                             $menu[] = ['label'=>'GRUPOS','options'=> ['class'=>'menu-title']];
-                            $menu[] = ['label' =>'<i class="fa fa-plus"></i><span> Nuevo Grupo','options'=> ['id'=>'create-grupo','class'=>'has-sub'], 'url' => "#grupo-modal"];
+                            $menu[] = ['label' =>'<i class="fa fa-plus"></i><span> Nuevo Grupo</span>','options'=> ['id'=>'create-grupo','class'=>'has-sub'], 'url' => "#grupo-modal"];
+                            
+                            $grupos = \backend\models\Grupo::find()->where(['emp_id'=>Yii::$app->user->identity->emp_id,'grupo_activo'=>1])->all();
+                            foreach ($grupos as $grupo){
+                                $menu[] = ['label' => '<i class="fa fa-circle-o text-'.$grupo->grupo_color.'"></i><span>'.Yii::t('app', ucwords(strtolower($grupo->grupo_nombre))).'</span>','options'=> ['id'=>'grupo-'.$grupo->grupo_id,'data-id'=>$grupo->grupo_id,'class'=>'has-sub'], 'url' => ['grupo/index','id'=>$grupo->grupo_id]];
+                            }
                             
                             echo \yii\widgets\Menu::widget([
                                     'options' => ['class' => ''],
@@ -283,10 +288,10 @@ $this->registerJs(<<<JS
                 type:'post',
                 dataType:'json',
                 beforeSend:function(){
-                   $("#modulo-modal").modal("toggle");
+                   $("#grupo-modal").modal("toggle");
                 },
                 success:function(resp){
-                   $("#modulo-modal .modal-body").html(resp.div);
+                   $("#grupo-modal .modal-body").html(resp.div);
                 },complete:function(jqXHR, textStatus){
         
                 }

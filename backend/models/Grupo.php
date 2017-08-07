@@ -14,7 +14,14 @@ use Yii;
  * @property string $grupo_color
  * @property string $grupo_fechacreacion
  * @property string $grupo_fechamodificacion
+ * @property integer $grupo_activo
+ * @property integer $emp_id
+ * @property string $usu_id_create
+ * @property string $grupo_admin
  *
+ * @property Empresa $emp
+ * @property Usuario $usuIdCreate
+ * @property Usuario $grupoAdmin
  * @property GrupoHasUsuario[] $grupoHasUsuarios
  * @property Usuario[] $usuarios
  * @property ModuloPostHasGrupo[] $moduloPostHasGrupos
@@ -36,10 +43,14 @@ class Grupo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['grup_publico'], 'integer'],
+            [['emp_id','grup_publico','grupo_nombre','grupo_descripcion'], 'required'],
+            [['grup_publico', 'grupo_activo', 'emp_id', 'usu_id_create', 'grupo_admin'], 'integer'],
             [['grupo_fechacreacion', 'grupo_fechamodificacion'], 'safe'],
             [['grupo_nombre'], 'string', 'max' => 100],
             [['grupo_descripcion', 'grupo_color'], 'string', 'max' => 45],
+            [['emp_id'], 'exist', 'skipOnError' => true, 'targetClass' => Empresa::className(), 'targetAttribute' => ['emp_id' => 'emp_id']],
+            [['usu_id_create'], 'exist', 'skipOnError' => true, 'targetClass' => Usuario::className(), 'targetAttribute' => ['usu_id_create' => 'usu_id']],
+            [['grupo_admin'], 'exist', 'skipOnError' => true, 'targetClass' => Usuario::className(), 'targetAttribute' => ['grupo_admin' => 'usu_id']],
         ];
     }
 
@@ -49,14 +60,42 @@ class Grupo extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'grupo_id' => 'ID',
-            'grupo_nombre' => 'Nombre',
-            'grupo_descripcion' => 'Descripcion',
-            'grup_publico' => 'Publico',
-            'grupo_color' => 'Color',
-            'grupo_fechacreacion' => 'Fechacreacion',
-            'grupo_fechamodificacion' => 'Fechamodificacion',
+            'grupo_id' => 'Grupo ID',
+            'grupo_nombre' => 'Grupo Nombre',
+            'grupo_descripcion' => 'Grupo Descripcion',
+            'grup_publico' => 'Grup Publico',
+            'grupo_color' => 'Grupo Color',
+            'grupo_fechacreacion' => 'Grupo Fechacreacion',
+            'grupo_fechamodificacion' => 'Grupo Fechamodificacion',
+            'grupo_activo' => 'Grupo Activo',
+            'emp_id' => 'Emp ID',
+            'usu_id_create' => 'Usu Id Create',
+            'grupo_admin' => 'Grupo Admin',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmp()
+    {
+        return $this->hasOne(Empresa::className(), ['emp_id' => 'emp_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsuIdCreate()
+    {
+        return $this->hasOne(Usuario::className(), ['usu_id' => 'usu_id_create']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGrupoAdmin()
+    {
+        return $this->hasOne(Usuario::className(), ['usu_id' => 'grupo_admin']);
     }
 
     /**
