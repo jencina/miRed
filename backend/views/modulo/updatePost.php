@@ -81,7 +81,7 @@ $this->registerJs(<<<JS
                 }
             },complete:function(jqXHR, textStatus){
                 if(jqXHR.responseJSON.status == 'save'){
-                    swal({ title: "Nuevo Modulo", text: "Post generado con exito.", type: "success" });
+                    swal({ title: "Editar Post", text: "Post guardado con exito.", type: "success" });
                 }
                 $("#btn-guardar").button('reset');
             }

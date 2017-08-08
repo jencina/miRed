@@ -34,11 +34,13 @@ class GrupoController extends Controller
     public function actionGetpost(){
                
                 $limit  = Yii::$app->request->get('limit');
-                $offset = Yii::$app->request->get('offset');    
+                $offset = Yii::$app->request->get('offset'); 
+                
+                $id     = Yii::$app->request->get('grupo_id'); 
                 
                 $post = \backend\models\ModuloPost::find()
                 ->join('inner join','modulo_post_has_grupo', 'modulo_post_has_grupo.mod_post_id = modulo_post.mod_post_id')
-                ->where(['mod_activo'=>1])
+                ->where(['mod_activo'=>1,'modulo_post_has_grupo.grupo_id'=>$id])
                 ->andWhere(['or',['mod_usu_id' => Yii::$app->user->id],['mod_post_asignado_usu_id' => Yii::$app->user->id]])
                 ->limit($limit)  //hasta
                 ->offset($offset) //desde

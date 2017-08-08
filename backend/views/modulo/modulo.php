@@ -92,8 +92,9 @@ $this->registerJs(<<<JS
                 }
             },complete:function(jqXHR, textStatus){
                 if(jqXHR.responseJSON.status == 'save'){
-                    $.pjax.reload({container: '#post-list' , async: false});
-                    swal({ title: "Nuevo Modulo", text: "Post generado con exito.", type: "success" });
+                    $('#lista-post .content').prepend(jqXHR.responseJSON.div);
+                    //$.pjax.reload({container: '#post-list' , async: false});
+                    swal({ title: "Nuevo Post", text: "Post generado con exito.", type: "success" });
                 }
                 $("#btn-guardar").button('reset');
             }

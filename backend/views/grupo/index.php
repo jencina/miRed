@@ -89,7 +89,7 @@ $urlFormFile    = \yii\helpers\Json::htmlEncode(Url::to(['modulo/uploadfile']));
 $updateFile     = \yii\helpers\Json::htmlEncode(Url::to(['modulo/updatefiles']));
 $updateUsuarios = \yii\helpers\Json::htmlEncode(Url::to(['modulo/updateusuarios']));
 
-$urlGetPost     = \yii\helpers\Json::htmlEncode(Url::to(['grupo/getpost']));
+$urlGetPost     = \yii\helpers\Json::htmlEncode(Url::to(['grupo/getpost','grupo_id'=>$model->grupo_id]));
 $updatePost     = \yii\helpers\Json::htmlEncode(Url::to(['modulo/updatepost']));
 
 $this->registerJs(<<<JS
@@ -105,7 +105,7 @@ $this->registerJs(<<<JS
             url: $urlGetPost,
             type:'post',
             error:function(){
-                //form.find("button").button("reset");
+                $.Notification.notify("error","right-bottom","Load Post","Algo ocurrio al cargar post relacionados");
             },
             beforeSend:function(){
                 //form.find("button").button("loading");

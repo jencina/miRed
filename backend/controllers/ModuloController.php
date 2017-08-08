@@ -121,7 +121,8 @@ class ModuloController extends Controller
                 $notificacion->insert();
                 
                 echo json_encode([
-                    'status'=>'save'
+                    'status'=>'save',
+                    'div'=>$this->renderAjax('//post/_post',['model'=>$post])
                 ]);
                 exit; 
             }
