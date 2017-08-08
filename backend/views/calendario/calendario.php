@@ -104,4 +104,14 @@ $this->registerCssFile(Yii::getAlias('@web') . '/plugins/fullcalendar/dist/fullc
 $this->registerJsFile(Yii::getAlias('@web') . '/plugins/fullcalendar/dist/fullcalendar.min.js', ['depends' => [\backend\assets\AdminAsset::className()]]);
 $this->registerJsFile(Yii::getAlias('@web') . '/plugins/jquery.fullcalendar.js', ['depends' => [\backend\assets\AdminAsset::className()]]);
 
+
+$this->registerJs(<<<JS
+        
+        function prueba(){
+            
+            console.log("prueba");
+            return false;
+        }
+JS
+);
 ?>

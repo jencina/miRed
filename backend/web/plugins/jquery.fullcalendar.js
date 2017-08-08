@@ -45,6 +45,7 @@
     },
     /* on click on event */
     CalendarApp.prototype.onEventClick =  function (calEvent, jsEvent, view) {
+        console.log('asd');
         var $this = this;
             var form = $("<form></form>");
             form.append("<label>Change event name</label>");
@@ -59,6 +60,7 @@
                 $this.$modal.modal('hide');
             });
             $this.$modal.find('form').on('submit', function () {
+                
                 calEvent.title = form.find("input[type=text]").val();
                 $this.$calendarObj.fullCalendar('updateEvent', calEvent);
                 $this.$modal.modal('hide');
@@ -197,4 +199,8 @@
 function($) {
     "use strict";
     $.CalendarApp.init()
+
+    
+    calEvent.title = form.find("input[type=text]").val();
+                $this.$calendarObj.fullCalendar('updateEvent', calEvent);
 }(window.jQuery);
