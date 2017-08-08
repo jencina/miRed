@@ -6,6 +6,7 @@ use yii\widgets\ListView;
 use yii\widgets\Pjax;
 use yii\helpers\Url;
 use yii\data\ActiveDataProvider;
+
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Muro';
@@ -16,7 +17,7 @@ $this->params['tittle'] = 'Bienvenido';
 <div id="lista-post" class="col-md-7" >
     <div class="content"></div>
     <ul id="pagination" style="display: none">
-        <li class="active"><?= \yii\bootstrap\Html::a('',['modulo/getpost','limit'=>5,'offset'=>1]); ?></li> 
+        <li class="active"><?= \yii\bootstrap\Html::a('', ['modulo/getpost', 'limit' => 5, 'offset' => 1]); ?></li> 
     </ul>    
 </div>
 
@@ -30,62 +31,157 @@ $this->params['tittle'] = 'Bienvenido';
                 <?php
                 Pjax::begin([
                     'id' => 'usuarios-emp-list',
-                    'timeout'=>5500,
+                    'timeout' => 5500,
                     'enablePushState' => false,
-                    // 'clientOptions' => ['method' => 'POST']
-                    ]) ?>
+                        // 'clientOptions' => ['method' => 'POST']
+                ])
+                ?>
                 <?php
-                
-                    $dataProvider = new ActiveDataProvider([
-                        'query' => backend\models\Usuario::find()
-                            ->where(['emp_id'=>Yii::$app->session->get('empresa')])
-                            ->andWhere(['<>','usu_id',Yii::$app->user->id ]),
-                            
-                        'pagination' => [
-                            'pageSize' => 10,
-                        ],
-                    ]);
-                    echo ListView::widget([
-                        'dataProvider' => $dataProvider,
-                        'id' => 'usuarios-emp',
-                        'itemOptions' => ['class' => 'item-list'],
-                        'itemView' => '_usuarios',
-                        'layout'=>'{items}{pager}',
-
-                        'pager' => [
-                           // 'class' => \kop\y2sp\ScrollPager::className(),
-                           // 'triggerText'=>'Cargar Post'
-                          ]
-                    ]);
+                $dataProvider = new ActiveDataProvider([
+                    'query' => backend\models\Usuario::find()
+                            ->where(['emp_id' => Yii::$app->session->get('empresa')])
+                            ->andWhere(['<>', 'usu_id', Yii::$app->user->id]),
+                    'pagination' => [
+                        'pageSize' => 10,
+                    ],
+                ]);
+                echo ListView::widget([
+                    'dataProvider' => $dataProvider,
+                    'id' => 'usuarios-emp',
+                    'itemOptions' => ['class' => 'item-list'],
+                    'itemView' => '_usuarios',
+                    'layout' => '{items}{pager}',
+                    'pager' => [
+                    // 'class' => \kop\y2sp\ScrollPager::className(),
+                    // 'triggerText'=>'Cargar Post'
+                    ]
+                ]);
                 ?>
                 <?php Pjax::end() ?>
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-12">
+
+        <!-- BEGIN MODAL -->
+        <div class="modal fade none-border" id="event-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title"><strong>Add Event</strong></h4>
+                    </div>
+                    <div class="modal-body"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white waves-effect" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success save-event waves-effect waves-light">Create event</button>
+                        <button type="button" class="btn btn-danger delete-event waves-effect waves-light" data-dismiss="modal">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Add Category -->
+        <div class="modal fade none-border" id="add-category">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title"><strong>Add</strong> a category</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="control-label">Category Name</label>
+                                    <input class="form-control form-white" placeholder="Enter name" type="text" name="category-name"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="control-label">Choose Category Color</label>
+                                    <select class="form-control form-white" data-placeholder="Choose a color..." name="category-color">
+                                        <option value="success">Success</option>
+                                        <option value="danger">Danger</option>
+                                        <option value="info">Info</option>
+                                        <option value="pink">Pink</option>
+                                        <option value="primary">Primary</option>
+                                        <option value="warning">Warning</option>
+                                        <option value="inverse">Inverse</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white waves-effect" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger waves-effect waves-light save-category" data-dismiss="modal">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END MODAL -->
+
+        <div class="widget">
+            <div class="widget-body">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <a href="#" data-toggle="modal" data-target="#add-category" class="btn btn-lg btn-default btn-block waves-effect waves-light">
+                            <i class="fa fa-plus"></i> Create New
+                        </a>
+                        <div id="external-events" class="m-t-20">
+                            <br>
+                            <p>Drag and drop your event or click in the calendar</p>
+                            <div class="external-event bg-primary" data-class="bg-primary" style="position: relative;">
+                                <i class="fa fa-move"></i>My Event One
+                            </div>
+                            <div class="external-event bg-pink" data-class="bg-pink" style="position: relative;">
+                                <i class="fa fa-move"></i>My Event Two
+                            </div>
+                            <div class="external-event bg-info" data-class="bg-info" style="position: relative;">
+                                <i class="fa fa-move"></i>My Event Three
+                            </div>
+                            <div class="external-event bg-purple" data-class="bg-purple" style="position: relative;">
+                                <i class="fa fa-move"></i>My Event Four
+                            </div>
+                        </div>
+
+                        <!-- checkbox -->
+                        <div class="checkbox m-t-40">
+                            <input id="drop-remove" type="checkbox">
+                            <label for="drop-remove">
+                                Remove after drop
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="card-box">
             <div id="calendar"></div>
         </div>
     </div> <!-- end col -->
-    
-</div>
-    
-<?php
 
-$urlFormModulo  = \yii\helpers\Json::htmlEncode(Url::to(['modulo/createcomentario']));
+</div>
+
+<?php
+$urlFormModulo = \yii\helpers\Json::htmlEncode(Url::to(['modulo/createcomentario']));
 $urlFormUsuario = \yii\helpers\Json::htmlEncode(Url::to(['modulo/agregarusuario']));
-$urlFormFile    = \yii\helpers\Json::htmlEncode(Url::to(['modulo/uploadfile']));
-$updateFile     = \yii\helpers\Json::htmlEncode(Url::to(['modulo/updatefiles']));
+$urlFormFile = \yii\helpers\Json::htmlEncode(Url::to(['modulo/uploadfile']));
+$updateFile = \yii\helpers\Json::htmlEncode(Url::to(['modulo/updatefiles']));
 $updateUsuarios = \yii\helpers\Json::htmlEncode(Url::to(['modulo/updateusuarios']));
 
-$urlGetPost     = \yii\helpers\Json::htmlEncode(Url::to(['modulo/getpost']));
-$updatePost     = \yii\helpers\Json::htmlEncode(Url::to(['modulo/updatepost']));
+$urlGetPost = \yii\helpers\Json::htmlEncode(Url::to(['modulo/getpost']));
+$updatePost = \yii\helpers\Json::htmlEncode(Url::to(['modulo/updatepost']));
 
+$this->registerJsFile(Yii::getAlias('@web') . '/plugins/jquery-ui/jquery-ui.min.js', ['depends' => [\backend\assets\AdminAsset::className()]]);
+$this->registerCssFile(Yii::getAlias('@web') . '/plugins/jquery-ui/jquery-ui.css', ['depends' => [\backend\assets\AdminAsset::className()]]);
 
-$this->registerCssFile(Yii::getAlias('@web') . '/plugins/moment/moment.js', ['depends' => [yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerCssFile(Yii::getAlias('@web') . '/plugins/fullcalendar/dist/fullcalendar.min.js', ['depends' => [yii\bootstrap\BootstrapAsset::className()]]);
-$this->registerCssFile(Yii::getAlias('@web') . '/plugins/jquery.fullcalendar.js', ['depends' => [yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile(Yii::getAlias('@web') . '/plugins/moment/moment.js', ['depends' => [\backend\assets\AdminAsset::className()]]);
+$this->registerCssFile(Yii::getAlias('@web') . '/plugins/fullcalendar/dist/fullcalendar.css', []);
+$this->registerJsFile(Yii::getAlias('@web') . '/plugins/fullcalendar/dist/fullcalendar.min.js', ['depends' => [\backend\assets\AdminAsset::className()]]);
+$this->registerJsFile(Yii::getAlias('@web') . '/plugins/jquery.fullcalendar.js', ['depends' => [\backend\assets\AdminAsset::className()]]);
 
 
 $this->registerJs(<<<JS
@@ -94,7 +190,7 @@ $this->registerJs(<<<JS
      
 JS
 );
-        
+
 $this->registerJs(<<<JS
                
     $(document).on("ready pjax:success",function(e){
@@ -345,12 +441,11 @@ $this->registerJs(<<<JS
     });  
           
 JS
-   );
+);
 
 
 //$this->registerJsFile(Yii::getAlias('@web') . '/plugins/custombox/dist/legacy.min.js', ['depends' => [yii\web\JqueryAsset::className()]]);
 //$this->registerCssFile(Yii::getAlias('@web') . '/plugins/custombox/dist/custombox.min.css', ['depends' => [yii\web\JqueryAsset::className()]]);
-    
 ?>
 
 
