@@ -8,6 +8,7 @@ use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * GrupoController implements the CRUD actions for Grupo model.
@@ -138,7 +139,7 @@ class GrupoController extends Controller
     public function actionArchivos($id)
     {        
         $dataProvider = new ActiveDataProvider([
-            'query' => \app\models\GrupoFile::find(),
+            'query' => \backend\models\GrupoFile::find(),
         ]);
 
         return $this->render('archivos', [
@@ -146,6 +147,40 @@ class GrupoController extends Controller
             'dataProvider' => $dataProvider
         ]);
 
+    }
+    
+    public function actionUploadfiles(){
+        
+       $model = new \backend\models\UploadForm();
+        
+        if ($model->load(Yii::$app->request->post())) {
+            $model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
+            if ($model->upload()) {
+                
+                $file = new \backend\models\GrupoFile();
+                $file->file_grupo_id           =  $model->parent_id;
+                $file->file_nombre            =  $model->imageFiles[0]->name;
+                $file->file_fechacreacion     =  date("Y-m-d H:i:s");
+                $file->file_fechamodificacion =  date("Y-m-d H:i:s");
+                $file->file_usu_id            =  Yii::$app->user->id;
+                $file->file_size              =  $model->imageFiles[0]->size;
+                $file->file_tipo              =  $model->imageFiles[0]->type;
+                
+                if($file->save()){
+                    echo json_encode([
+                        'status'=>'save',
+                        'id'=>$model->parent_id
+                    ]);
+                    exit;
+                } 
+            }
+        }
+        echo json_encode([
+            'status'=>'failed',
+            //'form' => $this->renderAjax('_formUpload',['model'=>$model])
+            ]);
+        exit;
+        
     }
     
     public function actionEventos($id)

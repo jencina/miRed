@@ -64,7 +64,6 @@ $this->params['tittle'] = 'Bienvenido';
 
     <div class="col-md-12">
         <div class="card-box">
-            <?= $this->render('//calendario/calendario') ?>
         </div>
     </div> <!-- end col -->
 </div>

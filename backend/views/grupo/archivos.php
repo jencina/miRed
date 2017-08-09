@@ -45,8 +45,9 @@ $this->params['tittle'] = 'Grupo';
                 <h3 class="panel-title">Subir Archivo</h3>
             </div>
             <div class="panel-body">
-                <form action="<?= Url::to(['grupo/uploadfiles']) ?>" id="frmdropzone" class="dropzone">
-                    <input type="hidden" name="periodo" id="periododrop" required value="">
+                <form action="<?= Url::to(['grupo/uploadfiles']) ?>" id="frmdropzone" class="dropzone" enctype="multipart/form-data">
+                    <input type="hidden" name="parent_id" id="periododrop" value="<?= $model->grupo_id;?>">
+                    <input type="hidden" name="_csrf-backend" value="<?= Yii::$app->request->getCsrfToken(); ?>" />
                 </form>
             </div>
         </div>
@@ -58,6 +59,8 @@ $this->params['tittle'] = 'Grupo';
 
 <?php 
 
+
+$this->registerJsFile(Yii::getAlias('@web') . '/plugins/progressUpload/jquery.form.min.js', ['depends' => [\backend\assets\AdminAsset::className()]]);
 $this->registerJsFile(Yii::getAlias('@web') . '/plugins/dropzone/dropzone.js', ['depends' => [\backend\assets\AdminAsset::className()]]);
 $this->registerCssFile(Yii::getAlias('@web') . '/plugins/dropzone/dropzone.css', ['depends' => [\backend\assets\AdminAsset::className()]]);
 
@@ -70,19 +73,24 @@ $this->registerJs(<<<JS
         
         var msg = "<br><br>";
         var myDropzone = new Dropzone("#frmdropzone", {maxFilesize: 100, acceptedFiles: '.pdf,.jpg,.jpeg,.png,.gif'});
+        
+        myDropzone.on("sending", function(file) {
+            file.myCustomName = "imageFiles";
+            console.log(file.myCustomName);
+        });
+        
         myDropzone.on("complete", function (file, response, xhr) {
             if (file.status != 'error') {
                 var json = JSON.parse(response);
                 if (json.error) {
                     msg += "* " + json.text + "<br>";
                 } else if (json.text != undefined) {
-                    alertify.success(json.text);
+                    alert(json.text);
                     msg += "* " + json.text + "<br>";
                     
                 }
             } else {
-                alertify.set('notifier', 'position', 'bottom-left');
-                alertify.error(response + ". Archivo: " + file.name, 15);
+                alert(response + ". Archivo: " + file.name);
                 msg += "* " + response + ". Archivo: " + file.name;
             }
             setTimeout(function () {
@@ -93,7 +101,6 @@ $this->registerJs(<<<JS
                 alertify.success("Carga Completada");
                 alertify.alert().set({'startMaximized': true, 'title': '<h1>Resumen Carga Masiva</h1>', 'message': msg}).show();
                 msg = "<br><br>";
-                tablaDespacho();
             }
 
         });
