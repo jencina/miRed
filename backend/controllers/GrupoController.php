@@ -140,6 +140,7 @@ class GrupoController extends Controller
     {        
         $dataProvider = new ActiveDataProvider([
             'query' => \backend\models\GrupoFile::find(),
+            'pagination' => [ 'pageSize' => 10 ],
         ]);
 
         return $this->render('archivos', [
@@ -151,18 +152,19 @@ class GrupoController extends Controller
     
     public function actionUploadfiles(){
         
-       $model = new \backend\models\UploadForm();
+        $model = new \backend\models\UploadForm();
         
         if ($model->load(Yii::$app->request->post())) {
             $model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
+            
             if ($model->upload()) {
                 
                 $file = new \backend\models\GrupoFile();
-                $file->file_grupo_id           =  $model->parent_id;
+                $file->grupo_id           =  $model->parent_id;
                 $file->file_nombre            =  $model->imageFiles[0]->name;
                 $file->file_fechacreacion     =  date("Y-m-d H:i:s");
                 $file->file_fechamodificacion =  date("Y-m-d H:i:s");
-                $file->file_usu_id            =  Yii::$app->user->id;
+                $file->usu_id            =  Yii::$app->user->id;
                 $file->file_size              =  $model->imageFiles[0]->size;
                 $file->file_tipo              =  $model->imageFiles[0]->type;
                 

@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
+use yii\widgets\Pjax;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Grupo */
 
@@ -21,9 +22,19 @@ $this->params['tittle'] = 'Grupo';
             <div class="panel-heading">
                 <h3 class="panel-title">Archivos Grupo</h3>
             </div>
-            <div class="panel-body">
+            <div class="panel-body table-responsive">
+                <?php
+                Pjax::begin([
+                    
+                    'id' => 'contenedor-grilla-archivos',
+                    'timeout' => 5500,
+                    'enablePushState' => false,
+                        // 'clientOptions' => ['method' => 'POST']
+                ])
+                ?>
                 <?= GridView::widget([
                     'dataProvider' => $dataProvider,
+                    'id'=>'grilla-archivos',
                     'tableOptions'=>['class'=>'table table-striped m-0'],
                     'columns' => [
                         ['class' => 'yii\grid\SerialColumn'],
@@ -34,7 +45,7 @@ $this->params['tittle'] = 'Grupo';
                         'file_fechamodificacion'
                     ],
                 ]); ?>
-                
+                 <?php Pjax::end() ?>
             </div>
         </div>
     </div>  
@@ -46,7 +57,7 @@ $this->params['tittle'] = 'Grupo';
             </div>
             <div class="panel-body">
                 <form action="<?= Url::to(['grupo/uploadfiles']) ?>" id="frmdropzone" class="dropzone" enctype="multipart/form-data">
-                    <input type="hidden" name="parent_id" id="periododrop" value="<?= $model->grupo_id;?>">
+                    <input type="hidden" name="UploadForm[parent_id]" id="periododrop" value="<?= $model->grupo_id;?>">
                     <input type="hidden" name="_csrf-backend" value="<?= Yii::$app->request->getCsrfToken(); ?>" />
                 </form>
             </div>
@@ -72,13 +83,7 @@ $this->registerJs(<<<JS
         });
         
         var msg = "<br><br>";
-        var myDropzone = new Dropzone("#frmdropzone", {maxFilesize: 100, acceptedFiles: '.pdf,.jpg,.jpeg,.png,.gif'});
-        
-        myDropzone.on("sending", function(file) {
-            file.myCustomName = "imageFiles";
-            console.log(file.myCustomName);
-        });
-        
+        var myDropzone = new Dropzone("#frmdropzone", {paramName: "UploadForm[imageFiles]",maxFilesize: 100, acceptedFiles: '.pdf,.jpg,.jpeg,.png,.gif'});        
         myDropzone.on("complete", function (file, response, xhr) {
             if (file.status != 'error') {
                 var json = JSON.parse(response);
@@ -89,6 +94,7 @@ $this->registerJs(<<<JS
                     msg += "* " + json.text + "<br>";
                     
                 }
+                $.pjax.reload({container: '#contenedor-grilla-archivos', async: false});
             } else {
                 alert(response + ". Archivo: " + file.name);
                 msg += "* " + response + ". Archivo: " + file.name;

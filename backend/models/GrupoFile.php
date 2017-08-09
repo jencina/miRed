@@ -51,14 +51,14 @@ class GrupoFile extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'file_id' => 'File ID',
-            'file_nombre' => 'File Nombre',
-            'file_tipo' => 'File Tipo',
-            'file_size' => 'File Size',
-            'file_fechacreacion' => 'File Fechacreacion',
-            'file_fechamodificacion' => 'File Fechamodificacion',
-            'grupo_id' => 'Grupo ID',
-            'usu_id' => 'Usu ID',
+            'file_id' => 'ID',
+            'file_nombre' => 'Nombre',
+            'file_tipo' => 'Tipo',
+            'file_size' => 'Size',
+            'file_fechacreacion' => 'Fecha Creacion',
+            'file_fechamodificacion' => 'Fecha Modificacion',
+            'grupo_id' => 'Grupo',
+            'usu_id' => 'Usuario',
         ];
     }
 
