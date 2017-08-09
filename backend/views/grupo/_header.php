@@ -43,7 +43,7 @@
         $menu[] = ['label' => '<i class="fa fa-navicon" ></i> Post', 'options' => ['class' => 'has-sub'], 'url' => ['grupo/index', 'id' => $model->grupo_id]];
         $menu[] = ['label' => '<i class="fa fa-comments-o" ></i> Conversaciones', 'options' => ['class' => 'has-sub'], 'url' => ['grupo/conversaciones', 'id' => $model->grupo_id]];
         $menu[] = ['label' => '<i class="fa fa-archive" ></i> Archivos', 'options' => ['class' => 'has-sub'], 'url' => ['grupo/archivos', 'id' => $model->grupo_id]];
-        $menu[] = ['label' => '<i class="fa fa-calendar" ></i> Eventos', 'options' => ['class' => 'has-sub'], 'url' => ['grupo/archivos', 'id' => $model->grupo_id]];
+        $menu[] = ['label' => '<i class="fa fa-calendar" ></i> Eventos', 'options' => ['class' => 'has-sub'], 'url' => ['grupo/eventos', 'id' => $model->grupo_id]];
         $menu[] = ['label' => '<i class="fa fa-cog" ></i> Configuracion', 'options' => ['class' => 'has-sub'], 'url' => ['grupo/configuracion', 'id' => $model->grupo_id]];
 
         echo \yii\widgets\Menu::widget([

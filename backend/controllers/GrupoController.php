@@ -123,6 +123,41 @@ class GrupoController extends Controller
             ]);
         }
     }
+    
+    public function actionConversaciones($id)
+    {
+        $model = $this->findModel($id);
+
+
+        return $this->render('conversaciones', [
+            'model' => $model,
+        ]);
+
+    }
+    
+    public function actionArchivos($id)
+    {        
+        $dataProvider = new ActiveDataProvider([
+            'query' => \app\models\GrupoFile::find(),
+        ]);
+
+        return $this->render('archivos', [
+            'model'        => $this->findModel($id),
+            'dataProvider' => $dataProvider
+        ]);
+
+    }
+    
+    public function actionEventos($id)
+    {
+        $model = $this->findModel($id);
+
+
+        return $this->render('eventos', [
+            'model' => $model,
+        ]);
+
+    }
 
     /**
      * Deletes an existing Grupo model.
