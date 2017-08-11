@@ -127,13 +127,51 @@ class GrupoController extends Controller
     
     public function actionConversaciones($id)
     {
-        $model = $this->findModel($id);
-
-
+        $dataProvider = new ActiveDataProvider([
+            'query' => \backend\models\Conversacion::find(),
+            'pagination' => [ 'pageSize' => 10 ],
+        ]);
+        
+        $conversacion = new \backend\models\Conversacion();
+        $conversacion->grupo_id = $id;
+        
+        $encuesta = new \backend\models\Conversacion();
+        $encuesta->grupo_id = $id;
+        
         return $this->render('conversaciones', [
-            'model' => $model,
+            'model'        => $this->findModel($id),
+            'dataProvider' => $dataProvider,
+            'conversacion' => $conversacion,
+            'encuesta'     => $encuesta
         ]);
 
+    }
+    
+    public function actionCreateconversacion(){
+        
+        $model = new \backend\models\Conversacion();
+        
+        if ($model->load(Yii::$app->request->post())) {
+            $model->con_fechacreacion     =  date("Y-m-d H:i:s");
+            $model->con_fechamodificacion =  date("Y-m-d H:i:s");
+            $model->usu_id                 =  Yii::$app->user->id;
+            
+            if($model->save()){
+                echo json_encode([
+                    'status'=>'save',
+                ]);
+                exit;
+            }
+        }
+        
+        print_r($model);
+        exit;
+        
+        echo json_encode([
+            'status'=>'failed',
+            //'form' => $this->renderAjax('_formUpload',['model'=>$model])
+            ]);
+        exit;
     }
     
     public function actionArchivos($id)
@@ -160,11 +198,11 @@ class GrupoController extends Controller
             if ($model->upload()) {
                 
                 $file = new \backend\models\GrupoFile();
-                $file->grupo_id           =  $model->parent_id;
+                $file->grupo_id               =  $model->parent_id;
                 $file->file_nombre            =  $model->imageFiles[0]->name;
                 $file->file_fechacreacion     =  date("Y-m-d H:i:s");
                 $file->file_fechamodificacion =  date("Y-m-d H:i:s");
-                $file->usu_id            =  Yii::$app->user->id;
+                $file->usu_id                 =  Yii::$app->user->id;
                 $file->file_size              =  $model->imageFiles[0]->size;
                 $file->file_tipo              =  $model->imageFiles[0]->type;
                 
@@ -182,13 +220,13 @@ class GrupoController extends Controller
             //'form' => $this->renderAjax('_formUpload',['model'=>$model])
             ]);
         exit;
-        
     }
+    
+    
     
     public function actionEventos($id)
     {
         $model = $this->findModel($id);
-
 
         return $this->render('eventos', [
             'model' => $model,
@@ -224,4 +262,6 @@ class GrupoController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+    
+    
 }
