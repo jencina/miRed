@@ -164,9 +164,6 @@ class GrupoController extends Controller
             }
         }
         
-        print_r($model);
-        exit;
-        
         echo json_encode([
             'status'=>'failed',
             //'form' => $this->renderAjax('_formUpload',['model'=>$model])

@@ -16,7 +16,7 @@ $this->params['tittle'] = 'Grupo';
 
 <div class="row">
     <div class="col-md-8">
-        <div class="panel panel-border panel-info">
+        <div class="panel panel-border panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Grupo Configuracion</h3>
             </div>
@@ -29,28 +29,43 @@ $this->params['tittle'] = 'Grupo';
     </div>  
     
     <div class="col-md-4">
-        <div class="text-center card-box">
-            <div class="member-card">
-                <div class="thumb-xl member-thumb m-b-10 center-block">
-                    <img src="<?= Yii::getAlias('@web'); ?>/admin-theme/images/users/avatar-1.jpg" class="img-circle img-thumbnail" alt="profile-image">
-                </div>
+        
+        <div class="panel panel-border panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Autor Grupo</h3>
+            </div>
+            <div class="panel-body text-center">
+                <div class="member-card">
+                    <div class="thumb-xl member-thumb m-b-10 center-block">
+                        <img src="<?= Yii::getAlias('@web'); ?>/admin-theme/images/users/avatar-1.jpg" class="img-circle img-thumbnail" alt="profile-image">
+                    </div>
 
-                <div class="">
-                    <h4 class="m-b-5">Mark A. McKnight</h4>
-                    <p class="text-muted">Autor</p>
+                    <div class="">
+                        <?php $autor = $model->usuIdCreate;?>
+                        <h4 class="m-b-5"><?= ucwords(strtolower($autor->usu_nombre.' '.$autor->usu_apellido)); ?></h4>
+                        <p class="text-muted"><?= $autor->usu_email; ?></p>
+                        <p><?= yii\bootstrap\Html::a('Cambiar',false,['class'=>'btn btn-primary']); ?></p>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="text-center card-box">
-            <div class="member-card">
-                <div class="thumb-xl member-thumb m-b-10 center-block">
-                    <img src="<?= Yii::getAlias('@web'); ?>/admin-theme/images/users/avatar-1.jpg" class="img-circle img-thumbnail" alt="profile-image">
-                </div>
+        <div class="panel panel-border panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Administrador</h3>
+            </div>
+            <div class="panel-body text-center">
+                <div class="member-card">
+                    <div class="thumb-xl member-thumb m-b-10 center-block">
+                        <img src="<?= Yii::getAlias('@web'); ?>/admin-theme/images/users/avatar-1.jpg" class="img-circle img-thumbnail" alt="profile-image">
+                    </div>
 
-                <div class="">
-                    <h4 class="m-b-5">Mark A. McKnight</h4>
-                    <p class="text-muted">Administrador</p>
+                    <div class="">
+                        <?php $admin = $model->grupoAdmin;?>
+                        <h4 class="m-b-5"><?= ucwords(strtolower($admin->usu_nombre.' '.$admin->usu_apellido)); ?></h4>
+                        <p class="text-muted"><?= $admin->usu_email; ?></p>
+                        <p><?= yii\bootstrap\Html::a('Cambiar',false,['class'=>'btn btn-primary']); ?></p>
+                    </div>
                 </div>
             </div>
         </div>
