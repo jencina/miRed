@@ -1,4 +1,5 @@
 <?php 
+
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 use yii\helpers\ArrayHelper;
@@ -6,6 +7,7 @@ use yii\widgets\Pjax;
 use yii\widgets\ListView;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Url;
+
 ?>
 
 <div id="post-<?= $model->mod_post_id ?>" class="col-lg-12 posts">
@@ -16,13 +18,13 @@ use yii\helpers\Url;
             </h3>
 
             <div class="portlet-widgets">
-               
                 <a data-toggle="collapse" data-parent="#accordion1" href="#bg-default<?= $model->mod_post_id ?>" class="" aria-expanded="true"><i class="ion-minus-round"></i></a>
                 <span class="divider"></span>
                 <a href="" id="btn-edit<?= $model->mod_post_id ?>" class="post-edit" data-id="<?= $model->mod_post_id ?>" ><i class="ion-compose"></i></a>
                 <span class="divider"></span>
                 <a href="#" data-toggle="remove"><i class="ion-close-round"></i></a>
             </div>
+            
             <div class="clearfix">
 
             </div>
@@ -51,24 +53,27 @@ use yii\helpers\Url;
                     <?php
                     $user = new backend\models\ModuloPostHasUsuario();
                     $user->modulo_post_mod_post_id = $model->mod_post_id;
+                    
                     $form = ActiveForm::begin([
-                        'id' => 'usuario-form'.$model->mod_post_id,
-                        'enableClientValidation'=>false,
-                        'options' =>['class'=>'form-usuario','data-pjax' => false ]
+                        'id'                     => 'usuario-form'.$model->mod_post_id,
+                        'enableClientValidation' => false,
+                        'options'                => ['class' => 'form-usuario' , 'data-pjax' => false ]
                     ]); ?>
                     
                     <?= $form->field($user, 'usuario_usu_id',['options'=>[
-                        'class'=>'input-group','style'=>'min-height: 100%'],                
-                        'template'=>''
+                        'class'    => 'input-group','style'=>'min-height: 100%'],                
+                        'template' => ''
                         . '<span class="input-group-btn">'
                         . '<button type="button" class="btn waves-effect waves-light btn-danger return-users" ><i class="fa fa-mail-reply"></i></button>'
                         . '</span>'
-                        .'{input}'
+                        . '{input}'
                         . '<span class="input-group-btn">'
                         . '<button type="submit" class="btn waves-effect waves-light btn-primary add-users"><i class="fa fa-plus"></i></button>'
                         . '</span>'
                         ])->dropDownList(ArrayHelper::map(backend\models\Usuario::find()->all(), 'usu_id', 'usu_nombre'),['tag' => null,'class' => 'form-control'])->label(false); ?>
+                    
                     <?= $form->field($user, 'modulo_post_mod_post_id')->hiddenInput()->label(false);?>
+                    
                     <?php ActiveForm::end(); ?>
                 </div>
                 

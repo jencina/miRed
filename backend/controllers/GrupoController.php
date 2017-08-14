@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+use yii\filters\AccessControl;
 
 /**
  * GrupoController implements the CRUD actions for Grupo model.
@@ -23,6 +24,18 @@ class GrupoController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                //'only' => ['index'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['conversaciones','index','getpost','create','configuracion',
+                            'eventos','createconversacion','archivos'],
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -129,7 +142,7 @@ class GrupoController extends Controller
     {
         $dataProvider = new ActiveDataProvider([
             'query' => \backend\models\Conversacion::find(),
-            'pagination' => [ 'pageSize' => 10 ],
+            'pagination' => [ 'pageSize' => 5 ],
         ]);
         
         $conversacion = new \backend\models\Conversacion();
@@ -144,7 +157,6 @@ class GrupoController extends Controller
             'conversacion' => $conversacion,
             'encuesta'     => $encuesta
         ]);
-
     }
     
     public function actionCreateconversacion(){

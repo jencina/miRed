@@ -20,10 +20,22 @@
         border-bottom: 4px solid transparent;
         line-height: 25px;
     }
-
-    #grupo-menu li.active > a,#grupo-menu li a:hover{
-        border-bottom: 4px solid rgba(255,255,255,.3);
+    
+    @media screen and (min-width: 768) and (max-width:1024px) {
+        #grupo-menu li.active > a,#grupo-menu li a:hover {
+            border-bottom: 4px solid rgba(255,255,255,.3);
+        }
     }
+    
+    @media screen  and (min-width: 0px) and (max-width:767px) {
+        #grupo-menu li.active > a,#grupo-menu li a:hover{
+            border-right: 4px solid rgba(255,255,255,.3);
+        }
+    }
+
+    
+    
+    
     
     /*************************************************************/
     /******************       HEAD       *************************/

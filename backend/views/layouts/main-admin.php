@@ -286,6 +286,9 @@ $this->registerJs(<<<JS
                 type:'post',
                 dataType:'json',
                 data:{mod_id:id},
+                error:function(){
+                    $.Notification.notify("error","right-bottom","Crear Modulo","Algo ocurrio al crear modulo.");
+                },
                 beforeSend:function(){
                    $("#modulo-modal").modal("toggle");
                 },
@@ -305,6 +308,9 @@ $this->registerJs(<<<JS
                 url: $urlFormGrupo,
                 type:'post',
                 dataType:'json',
+                error:function(){
+                    $.Notification.notify("error","right-bottom","Crear Grupo","Algo ocurrio al crear grupo.");
+                },
                 beforeSend:function(){
                    $("#grupo-modal").modal("toggle");
                 },

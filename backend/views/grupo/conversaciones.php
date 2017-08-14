@@ -37,39 +37,38 @@ $this->params['tittle']        = 'Grupo';
                             <span class="hidden-xs">Encuenta</span>
                         </a>
                     </li>
-                    <div class="indicator" style="right: 394px; left: 0px;"></div></ul>
+                    
+                    <div class="indicator" style="right: 394px; left: 0px;"></div>
+                </ul>
+                
                 <div class="tab-content p-0">
 
                     <div class="tab-pane active " id="home-12" style="display: block;">
-                        <?php
-                        $form = ActiveForm::begin([
-                            'id' => 'form-conversacion'
-                        ]);
-                        ?>
+                        <?php $form = ActiveForm::begin(['id' => 'form-conversacion']); ?>
                         <div class="panel-body">               
                             <?= $form->field($conversacion, 'con_contenido', ['options' => ['class' => '']])->textarea(['maxlength' => true, 'placeholder' => 'Iniciar Conversacion...'])->label(false) ?>                
                             <?= $form->field($conversacion, 'grupo_id')->hiddenInput()->label(false) ?> 
                         </div>
+                        
                         <div class="panel-footer">
-                        <?= Html::submitButton('Publicar', ['id' => 'btn-guardar', 'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+                            <?= Html::submitButton('Publicar', ['id' => 'btn-guardar', 'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
                         </div>
                         <?php ActiveForm::end(); ?>   
                     </div>
 
                     <div class="tab-pane" id="profile-12" style="display: none;">
-
-                        <?php
-                            $form = ActiveForm::begin([
-                                        'id' => 'form-encuesta'
-                            ]);
-                        ?>
+                        
+                        <?php $form = ActiveForm::begin(['id' => 'form-encuesta']); ?>
+                        
                         <div class="panel-body">               
-                        <?= $form->field($encuesta, 'con_contenido', ['options' => ['class' => '']])->textarea(['maxlength' => true]) ?>                
-                        <?= $form->field($encuesta, 'grupo_id')->hiddenInput()->label(false) ?> 
+                            <?= $form->field($encuesta, 'con_contenido', ['options' => ['class' => '']])->textarea(['maxlength' => true, 'placeholder' => 'Iniciar Conversacion...'])->label(false) ?>                
+                            <?= $form->field($encuesta, 'grupo_id')->hiddenInput()->label(false) ?> 
                         </div>
+                        
                         <div class="panel-footer">
-                        <?= Html::submitButton('Publicar', ['id' => 'btn-guardar', 'class' => $encuesta->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+                            <?= Html::submitButton('Publicar', ['id' => 'btn-guardar', 'class' => $encuesta->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
                         </div>
+                        
                         <?php ActiveForm::end(); ?>   
                     </div>
                 </div>
@@ -78,24 +77,25 @@ $this->params['tittle']        = 'Grupo';
             
             <div id="lista-post" class="col-md-12" >
                 <div class="content">
-                    <?php
+                <?php
                 Pjax::begin([
-                    'id' => 'list-conversaciones',
-                    'timeout' => 5500,
+                    'id'       => 'list-conversaciones',
+                    'timeout'  => 5500,
                     'enablePushState' => false,
                         // 'clientOptions' => ['method' => 'POST']
                 ])
                 ?>
+                    
                 <?php
                     echo ListView::widget([
                         'dataProvider' => $dataProvider,
-                        'id' => 'usuarios-emp',
-                        'itemOptions' => ['class' => 'item-list'],
-                        'itemView' => '_conversacion',
-                        'layout' => '{items}{pager}',
+                        'id'           => 'usuarios-emp',
+                        'itemOptions'  => ['class' => 'item-list row'],
+                        'itemView'     => '_conversacion',
+                        'layout'       => '{items}{pager}',
                         'pager' => [
-                        // 'class' => \kop\y2sp\ScrollPager::className(),
-                        // 'triggerText'=>'Cargar Post'
+                             'class' => \kop\y2sp\ScrollPager::className(),
+                             'triggerText'=>'Cargar Post'
                         ]
                     ]);
                 ?>
