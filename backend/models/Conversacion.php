@@ -16,6 +16,7 @@ use Yii;
  *
  * @property Grupo $grupo
  * @property Usuario $usu
+ * @property Like[] $likes 
  */
 class Conversacion extends \yii\db\ActiveRecord
 {
@@ -72,4 +73,9 @@ class Conversacion extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Usuario::className(), ['usu_id' => 'usu_id']);
     }
+    
+    public function getLikes() 
+    { 
+       return $this->hasMany(Like::className(), ['con_id' => 'con_id']); 
+    } 
 }

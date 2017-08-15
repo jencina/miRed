@@ -42,7 +42,9 @@ use yii\helpers\Url;
              <hr class="m-0">
             <div class="panel-body p-t-10 p-b-10" style="position:relative">
                 <div class="row">
-                    <?= Html::a('<i class="fa fa-thumbs-o-up"></i> Me Gusta');?>
+                    
+                    <?= Html::a('<i class="fa fa-thumbs-o-up"></i> Me Gusta',false,['class'=>'like','data-id'=>$model->con_id]);?>
+                    
                     <span class="m-r-5"></span>
                     <?= Html::a('<i class="fa fa-reply"></i> Responder');?>
                     <span class="m-r-5"></span>

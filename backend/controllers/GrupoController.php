@@ -31,7 +31,7 @@ class GrupoController extends Controller
                     [
                         'allow' => true,
                         'actions' => ['conversaciones','index','getpost','create','configuracion',
-                            'eventos','createconversacion','archivos'],
+                            'eventos','createconversacion','archivos','create-like'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -141,7 +141,8 @@ class GrupoController extends Controller
     public function actionConversaciones($id)
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => \backend\models\Conversacion::find(),
+            'query' => \backend\models\Conversacion::find()->where(['grupo_id'=>$id]),
+            'sort'=> ['defaultOrder' => ['con_fechacreacion'=>SORT_DESC]], 
             'pagination' => [ 'pageSize' => 5 ],
         ]);
         
@@ -269,6 +270,28 @@ class GrupoController extends Controller
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+    
+    public function actionCreateLike(){
+        
+        $id = Yii::$app->request->post('id');
+        $like = new \backend\models\Like();
+        $like->con_id = $id;
+        $like->usu_id = Yii::$app->user->id;
+        $like->like_fechacreacion = date("Y-m-d H:i:s");
+        
+        if($like->insert()){
+            echo json_encode([
+                'status'=>'success',
+                'id' =>$id
+            ]);
+            exit;
+        }else{
+            echo json_encode([
+                'status'=>'failed',
+                'id' =>$id
+            ]);
         }
     }
     

@@ -73,8 +73,7 @@ $this->params['tittle']        = 'Grupo';
                     </div>
                 </div>
             </div>
-            
-            
+
             <div id="lista-post" class="col-md-12" >
                 <div class="content">
                 <?php
@@ -94,8 +93,8 @@ $this->params['tittle']        = 'Grupo';
                         'itemView'     => '_conversacion',
                         'layout'       => '{items}{pager}',
                         'pager' => [
-                             'class' => \kop\y2sp\ScrollPager::className(),
-                             'triggerText'=>'Cargar Post'
+                           //  'class' => \kop\y2sp\ScrollPager::className(),
+                           //  'triggerText'=>'Cargar Post'
                         ]
                     ]);
                 ?>
@@ -140,7 +139,36 @@ $this->params['tittle']        = 'Grupo';
 $createConversacion   = \yii\helpers\Json::htmlEncode(Url::to(['grupo/createconversacion']));
 $urlGetConversaciones = \yii\helpers\Json::htmlEncode(Url::to(['grupo/getconversaciones']));
 
+$urlCreateLike = \yii\helpers\Json::htmlEncode(Url::to(['grupo/create-like']));
+
 $this->registerJs(<<<JS
+        
+    $(".like").on('click',function(e){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+   
+        var id = $(this).attr("data-id");
+        
+        $.ajax({
+            url: $urlCreateLike,
+            type:'post',
+            dataType:'json',
+            data: {id:id},
+            error:function(){
+                $.Notification.notify("error","right-bottom","Me Gusta","Algo ocurrio al agregar 'Me Gusta'");
+            },
+            beforeSend:function(){
+               //form.find("button").button("loading");
+            },
+            success:function(resp){
+                //$.pjax.reload({container:"#list-conversaciones"}); 
+            },complete:function(jqXHR, textStatus){
+                //form[0].reset();
+                //form.find("button").button("reset");
+            }
+        });
+        return false;
+    });     
     
     $("#form-conversacion").on("beforeSubmit",function(e){
         e.preventDefault();
@@ -159,7 +187,7 @@ $this->registerJs(<<<JS
                form.find("button").button("loading");
             },
             success:function(resp){
-                $("#list-comentario"+resp.id).append(resp.coment);
+                 $.pjax.reload({container:"#list-conversaciones"}); 
             },complete:function(jqXHR, textStatus){
                 form[0].reset();
                 form.find("button").button("reset");
