@@ -137,6 +137,7 @@ $this->params['tittle']        = 'Grupo';
 
 <?php
 $createConversacion   = \yii\helpers\Json::htmlEncode(Url::to(['grupo/createconversacion']));
+$createRespuesta      = \yii\helpers\Json::htmlEncode(Url::to(['grupo/create-respuesta']));
 $urlGetConversaciones = \yii\helpers\Json::htmlEncode(Url::to(['grupo/getconversaciones']));
 
 $urlCreateLike = \yii\helpers\Json::htmlEncode(Url::to(['grupo/create-like']));
@@ -169,6 +170,32 @@ $this->registerJs(<<<JS
         });
         return false;
     });     
+        
+    $("form.respuesta").on("beforeSubmit",function(e){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        
+        var form = $(this);
+        $.ajax({
+            url: $createRespuesta,
+            type:'post',
+            dataType:'json',
+            data: form.serialize(),
+            error:function(){
+                form.find("button").button("reset");
+            },
+            beforeSend:function(){
+               form.find("button").button("loading");
+            },
+            success:function(resp){
+                 $.pjax.reload({container:"#list-conversaciones"}); 
+            },complete:function(jqXHR, textStatus){
+                form[0].reset();
+                form.find("button").button("reset");
+            }
+        });
+        return false;
+    });    
     
     $("#form-conversacion").on("beforeSubmit",function(e){
         e.preventDefault();

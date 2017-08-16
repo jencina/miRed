@@ -13,10 +13,13 @@ use Yii;
  * @property string $con_contenido
  * @property string $grupo_id
  * @property string $usu_id
+ * @property string $con_id_padre
  *
+ * @property Conversacion $conIdPadre
+ * @property Conversacion[] $conversacions
  * @property Grupo $grupo
  * @property Usuario $usu
- * @property Like[] $likes 
+ * @property Like[] $likes
  */
 class Conversacion extends \yii\db\ActiveRecord
 {
@@ -37,7 +40,8 @@ class Conversacion extends \yii\db\ActiveRecord
             [['con_fechacreacion', 'con_fechamodificacion'], 'safe'],
             [['con_contenido'], 'string'],
             [['grupo_id'], 'required'],
-            [['grupo_id', 'usu_id'], 'integer'],
+            [['grupo_id', 'usu_id', 'con_id_padre'], 'integer'],
+            [['con_id_padre'], 'exist', 'skipOnError' => true, 'targetClass' => Conversacion::className(), 'targetAttribute' => ['con_id_padre' => 'con_id']],
             [['grupo_id'], 'exist', 'skipOnError' => true, 'targetClass' => Grupo::className(), 'targetAttribute' => ['grupo_id' => 'grupo_id']],
             [['usu_id'], 'exist', 'skipOnError' => true, 'targetClass' => Usuario::className(), 'targetAttribute' => ['usu_id' => 'usu_id']],
         ];
@@ -55,7 +59,24 @@ class Conversacion extends \yii\db\ActiveRecord
             'con_contenido' => 'Con Contenido',
             'grupo_id' => 'Grupo ID',
             'usu_id' => 'Usu ID',
+            'con_id_padre' => 'Con Id Padre',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getConIdPadre()
+    {
+        return $this->hasOne(Conversacion::className(), ['con_id' => 'con_id_padre']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getConversacions()
+    {
+        return $this->hasMany(Conversacion::className(), ['con_id_padre' => 'con_id']);
     }
 
     /**
@@ -73,9 +94,12 @@ class Conversacion extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Usuario::className(), ['usu_id' => 'usu_id']);
     }
-    
-    public function getLikes() 
-    { 
-       return $this->hasMany(Like::className(), ['con_id' => 'con_id']); 
-    } 
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLikes()
+    {
+        return $this->hasMany(Like::className(), ['con_id' => 'con_id']);
+    }
 }

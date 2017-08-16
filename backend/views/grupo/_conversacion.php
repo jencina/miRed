@@ -42,7 +42,6 @@ use yii\helpers\Url;
              <hr class="m-0">
             <div class="panel-body p-t-10 p-b-10" style="position:relative">
                 <div class="row">
-                    
                     <?= Html::a('<i class="fa fa-thumbs-o-up"></i> Me Gusta',false,['class'=>'like','data-id'=>$model->con_id]);?>
                     
                     <span class="m-r-5"></span>
@@ -56,8 +55,35 @@ use yii\helpers\Url;
             
             <div class="panel-footer">
                 <div class="inbox-widget nicescroll" tabindex="5001" style="overflow: hidden; outline: none;">
+                    <div class="col-md-12">
+                        <?php 
+                        $comentarios = backend\models\Conversacion::find()
+                                        ->where(['con_id_padre'=>$model->con_id])
+                                        ->limit(5)  //hasta
+                                        ->offset(1) //desde
+                                        ->orderBy([ 'con_fechacreacion' => SORT_ASC])
+                                        ->all();
+                        
+                        foreach ($comentarios as $com){
+                               echo $this->render('_respuesta',['model'=>$com]);
+                        }
+                        ?>
+                    </div>
                     <div id="list-comentario<?= $model->con_id; ?>" class="col-md-12">
-
+                        <?php 
+                        $mod = new \backend\models\Conversacion();
+                        $mod->con_id_padre = $model->con_id;
+                        $mod->grupo_id     = $model->grupo_id;
+                        $form = ActiveForm::begin([
+                            'id' => 'form-respuesta'.$model->con_id,
+                            'options'=>['class'=>'respuesta'] ]); ?>
+           
+                            <?= $form->field($mod, 'con_contenido', ['options' => ['class' => '']])->textarea(['maxlength' => true, 'placeholder' => 'Escribir Respuesta'])->label(false) ?>                
+                            <?= $form->field($mod, 'grupo_id')->hiddenInput()->label(false) ?> 
+                            <?= $form->field($mod, 'con_id_padre')->hiddenInput()->label(false) ?> 
+                        
+                            <?= Html::submitButton('Publicar', ['id' => 'btn-guardar', 'class' => $mod->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+                        <?php ActiveForm::end(); ?>  
                     </div>
                 </div>
             </div>

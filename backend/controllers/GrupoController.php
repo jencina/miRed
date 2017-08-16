@@ -31,7 +31,7 @@ class GrupoController extends Controller
                     [
                         'allow' => true,
                         'actions' => ['conversaciones','index','getpost','create','configuracion',
-                            'eventos','createconversacion','archivos','create-like'],
+                            'eventos','createconversacion','archivos','create-like','create-respuesta'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -141,7 +141,7 @@ class GrupoController extends Controller
     public function actionConversaciones($id)
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => \backend\models\Conversacion::find()->where(['grupo_id'=>$id]),
+            'query' => \backend\models\Conversacion::find()->where(['grupo_id'=>$id])->andWhere(['is', 'con_id_padre', null]),
             'sort'=> ['defaultOrder' => ['con_fechacreacion'=>SORT_DESC]], 
             'pagination' => [ 'pageSize' => 5 ],
         ]);
@@ -293,6 +293,30 @@ class GrupoController extends Controller
                 'id' =>$id
             ]);
         }
+    }
+    
+    public function actionCreateRespuesta(){
+        
+        $model = new \backend\models\Conversacion();
+        
+        if ($model->load(Yii::$app->request->post())) {
+            $model->con_fechacreacion     =  date("Y-m-d H:i:s");
+            $model->con_fechamodificacion =  date("Y-m-d H:i:s");
+            $model->usu_id                 =  Yii::$app->user->id;
+            
+            if($model->save()){
+                echo json_encode([
+                    'status'=>'save',
+                ]);
+                exit;
+            }
+        }
+        
+        echo json_encode([
+            'status'=>'failed',
+            //'form' => $this->renderAjax('_formUpload',['model'=>$model])
+            ]);
+        exit;
     }
     
     
