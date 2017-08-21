@@ -15,7 +15,7 @@ $this->params['tittle'] = 'Bienvenido';
 ?>
 
 <div id="lista-post" class="col-md-7" >
-    <div class="content"></div>
+    <div class="content row"></div>
     <ul id="pagination" style="display: none">
         <li class="active"><?= \yii\bootstrap\Html::a('', ['modulo/getpost', 'limit' => 5, 'offset' => 1]); ?></li> 
     </ul>    
