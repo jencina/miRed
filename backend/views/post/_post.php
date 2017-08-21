@@ -155,7 +155,8 @@ use yii\helpers\Url;
                 $comentario->com_mod_post_id = $model->mod_post_id;
                 $form = ActiveForm::begin([
                     'id'=>'comentario-form'.$model->mod_post_id,
-                    'enableClientValidation'=>false,
+                    'enableAjaxValidation'=>false,
+                    'enableClientValidation'=>true,
                     'options'=>['class'=>'form-comentario','data-pjax' => false ]
                 ]); ?>
                 <div class="row">

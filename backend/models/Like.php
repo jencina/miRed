@@ -7,10 +7,9 @@ use Yii;
 /**
  * This is the model class for table "like".
  *
- * @property integer $like_id
- * @property string $like_fechacreacion
- * @property string $usu_id
  * @property string $con_id
+ * @property string $usu_id
+ * @property string $fechacreacion
  *
  * @property Conversacion $con
  * @property Usuario $usu
@@ -31,9 +30,9 @@ class Like extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['like_fechacreacion'], 'safe'],
-            [['usu_id', 'con_id'], 'required'],
-            [['usu_id', 'con_id'], 'integer'],
+            [['con_id', 'usu_id', 'fechacreacion'], 'required'],
+            [['con_id', 'usu_id'], 'integer'],
+            [['fechacreacion'], 'safe'],
             [['con_id'], 'exist', 'skipOnError' => true, 'targetClass' => Conversacion::className(), 'targetAttribute' => ['con_id' => 'con_id']],
             [['usu_id'], 'exist', 'skipOnError' => true, 'targetClass' => Usuario::className(), 'targetAttribute' => ['usu_id' => 'usu_id']],
         ];
@@ -45,10 +44,9 @@ class Like extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'like_id' => 'Like ID',
-            'like_fechacreacion' => 'Like Fechacreacion',
-            'usu_id' => 'Usu ID',
             'con_id' => 'Con ID',
+            'usu_id' => 'Usu ID',
+            'fechacreacion' => 'Fechacreacion',
         ];
     }
 

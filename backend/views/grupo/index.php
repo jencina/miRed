@@ -22,7 +22,9 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row">
     
     <div id="lista-post" class="col-md-7">
-        <div class="content"></div>
+        <div class="row content">
+            
+        </div>
         <ul id="pagination" style="display: none">
             <li class="active"><?= \yii\bootstrap\Html::a('',['modulo/getpost','limit'=>5,'offset'=>1]); ?></li> 
         </ul>  

@@ -30,8 +30,8 @@ class GrupoController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['conversaciones','index','getpost','create','configuracion',
-                            'eventos','createconversacion','archivos','create-like','create-respuesta'],
+                       /* 'actions' => ['conversaciones','index','getpost','create','configuracion',
+                            'eventos','createconversacion','archivos','create-like','create-respuesta','delete-like'],*/
                         'roles' => ['@'],
                     ],
                 ],
@@ -279,12 +279,35 @@ class GrupoController extends Controller
         $like = new \backend\models\Like();
         $like->con_id = $id;
         $like->usu_id = Yii::$app->user->id;
-        $like->like_fechacreacion = date("Y-m-d H:i:s");
+        $like->fechacreacion = date("Y-m-d H:i:s");
         
         if($like->insert()){
+            $model = \backend\models\Conversacion::findOne(['con_id'=>$id]);
             echo json_encode([
                 'status'=>'success',
+                'id' =>$id,
+                'data'=>$this->renderAjax('_like',['model'=>$model])
+            ]);
+            exit;
+        }else{
+            echo json_encode([
+                'status'=>'failed',
                 'id' =>$id
+            ]);
+        }
+    }
+    
+    public function actionDeleteLike(){
+        
+        $id = Yii::$app->request->post('id');
+        $like = \backend\models\Like::findOne(['con_id'=>$id,'usu_id'=>Yii::$app->user->id]);
+        
+        if($like->delete()){
+            $model = \backend\models\Conversacion::findOne(['con_id'=>$id]);
+            echo json_encode([
+                'status'=>'success',
+                'id' =>$id,
+                'data'=>$this->renderAjax('_like',['model'=>$model])
             ]);
             exit;
         }else{
@@ -319,5 +342,33 @@ class GrupoController extends Controller
         exit;
     }
     
+    public function actionMasRespuestas(){
+        
+        $id    = Yii::$app->request->post('id');
+        $count = Yii::$app->request->post('count');
+        
+        $comentarios = \backend\models\Conversacion::findBySql('select t.* from (
+                            SELECT * FROM conversacion where con_id_padre = '.$id.'
+                            order by con_fechacreacion desc limit '.$count.',5) t order by t.con_fechacreacion asc')->all();
+        
+        $respuestas = '';
+        foreach ($comentarios as $com){
+            $respuestas .= $this->renderPartial('_respuesta',['model'=>$com]);
+        }
+        
+        if(count($comentarios) > 0){
+            echo json_encode([
+                'status'=>'success',
+                'id' =>$id,
+                'data'=> $respuestas
+            ]);
+            exit;
+        }else{
+            echo json_encode([
+                'status'=>'failed',
+                'id' =>$id
+            ]);
+        }
+    }
     
 }

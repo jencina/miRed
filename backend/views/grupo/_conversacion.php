@@ -39,16 +39,9 @@ use yii\helpers\Url;
                
 
             </div>
-             <hr class="m-0">
-            <div class="panel-body p-t-10 p-b-10" style="position:relative">
-                <div class="row">
-                    <?= Html::a('<i class="fa fa-thumbs-o-up"></i> Me Gusta',false,['class'=>'like','data-id'=>$model->con_id]);?>
-                    
-                    <span class="m-r-5"></span>
-                    <?= Html::a('<i class="fa fa-reply"></i> Responder');?>
-                    <span class="m-r-5"></span>
-                    <?= Html::a('<i class="fa fa-share-alt"></i> Compartir');?>
-                </div>
+            <hr class="m-0">
+            <div id="interraction<?= $model->con_id; ?>" class="panel-body p-t-10 p-b-10" style="position:relative;font-size: 13px">
+               <?= $this->render('_like',['model'=>$model]);?>
             </div>
             
             <hr class="m-0">
@@ -57,15 +50,18 @@ use yii\helpers\Url;
                 <div class="inbox-widget nicescroll" tabindex="5001" style="overflow: hidden; outline: none;">
                     <div class="col-md-12">
                         <?php 
-                        $comentarios = backend\models\Conversacion::find()
-                                        ->where(['con_id_padre'=>$model->con_id])
-                                        ->limit(5)  //hasta
-                                        ->offset(1) //desde
-                                        ->orderBy([ 'con_fechacreacion' => SORT_ASC])
-                                        ->all();
+                        $comentarios = backend\models\Conversacion::findBySql('select t.* from (
+                            SELECT * FROM conversacion where con_id_padre = '.$model->con_id.'
+                            order by con_fechacreacion desc limit 0,5) t order by t.con_fechacreacion asc')->all();
                         
+                        if(count($comentarios) >= 5){
+                            echo Html::a('Ver Mas...',false,['class'=>'more-respuesta','data-id'=>$model->con_id]);
+                        }
+                    ?></div>
+                    <div id="respuestas<?= $model->con_id; ?>" class="col-md-12">
+                        <?php 
                         foreach ($comentarios as $com){
-                               echo $this->render('_respuesta',['model'=>$com]);
+                            echo $this->render('_respuesta',['model'=>$com]);
                         }
                         ?>
                     </div>

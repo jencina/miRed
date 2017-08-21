@@ -75,30 +75,30 @@ $this->params['tittle']        = 'Grupo';
             </div>
 
             <div id="lista-post" class="col-md-12" >
-                <div class="content">
-                <?php
-                Pjax::begin([
-                    'id'       => 'list-conversaciones',
-                    'timeout'  => 5500,
-                    'enablePushState' => false,
-                        // 'clientOptions' => ['method' => 'POST']
-                ])
-                ?>
-                    
-                <?php
-                    echo ListView::widget([
-                        'dataProvider' => $dataProvider,
-                        'id'           => 'usuarios-emp',
-                        'itemOptions'  => ['class' => 'item-list row'],
-                        'itemView'     => '_conversacion',
-                        'layout'       => '{items}{pager}',
-                        'pager' => [
-                           //  'class' => \kop\y2sp\ScrollPager::className(),
-                           //  'triggerText'=>'Cargar Post'
-                        ]
-                    ]);
-                ?>
-                <?php Pjax::end() ?>
+                <div class="row">
+                    <?php
+                    Pjax::begin([
+                        'id'       => 'list-conversaciones',
+                        'timeout'  => 5500,
+                        'enablePushState' => false,
+                        'enableReplaceState' => false,
+                        'clientOptions' => ['method' => 'POST']
+                    ])
+                    ?>
+
+                    <?php
+                        echo ListView::widget([
+                            'dataProvider' => $dataProvider,
+                            'id'           => 'usuarios-emp',
+                            'itemOptions'  => ['class' => 'item'],
+                            'itemView'     => '_conversacion',
+                            'layout'       => '{items}{pager}',
+                            'pager' => [
+                                //'class' => \kop\y2sp\ScrollPager::className(),
+                                ]
+                        ]);
+                    ?>
+                    <?php Pjax::end() ?>
                 </div>  
             </div>
 
@@ -140,43 +140,19 @@ $createConversacion   = \yii\helpers\Json::htmlEncode(Url::to(['grupo/createconv
 $createRespuesta      = \yii\helpers\Json::htmlEncode(Url::to(['grupo/create-respuesta']));
 $urlGetConversaciones = \yii\helpers\Json::htmlEncode(Url::to(['grupo/getconversaciones']));
 
-$urlCreateLike = \yii\helpers\Json::htmlEncode(Url::to(['grupo/create-like']));
+$urlMasRespuestas = \yii\helpers\Json::htmlEncode(Url::to(['grupo/mas-respuestas']));
 
+$urlCreateLike = \yii\helpers\Json::htmlEncode(Url::to(['grupo/create-like']));
+$urlDeleteLike = \yii\helpers\Json::htmlEncode(Url::to(['grupo/delete-like']));
 $this->registerJs(<<<JS
-        
-    $(".like").on('click',function(e){
-        e.preventDefault();
-        e.stopImmediatePropagation();
-   
-        var id = $(this).attr("data-id");
-        
-        $.ajax({
-            url: $urlCreateLike,
-            type:'post',
-            dataType:'json',
-            data: {id:id},
-            error:function(){
-                $.Notification.notify("error","right-bottom","Me Gusta","Algo ocurrio al agregar 'Me Gusta'");
-            },
-            beforeSend:function(){
-               //form.find("button").button("loading");
-            },
-            success:function(resp){
-                //$.pjax.reload({container:"#list-conversaciones"}); 
-            },complete:function(jqXHR, textStatus){
-                //form[0].reset();
-                //form.find("button").button("reset");
-            }
-        });
-        return false;
-    });     
-        
+     
+/*   
     $("form.respuesta").on("beforeSubmit",function(e){
         e.preventDefault();
         e.stopImmediatePropagation();
-        
+
         var form = $(this);
-        $.ajax({
+            $.ajax({
             url: $createRespuesta,
             type:'post',
             dataType:'json',
@@ -188,14 +164,131 @@ $this->registerJs(<<<JS
                form.find("button").button("loading");
             },
             success:function(resp){
-                 $.pjax.reload({container:"#list-conversaciones"}); 
+                $.pjax.reload({container:"#list-conversaciones"}); 
+        
             },complete:function(jqXHR, textStatus){
                 form[0].reset();
                 form.find("button").button("reset");
             }
         });
         return false;
-    });    
+    });      */
+          
+    $(document).on("ajaxComplete ready :pjax-success",function(){
+           $("form.respuesta").on("beforeSubmit",function(e){
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                var form = $(this);
+                    $.ajax({
+                    url: $createRespuesta,
+                    type:'post',
+                    dataType:'json',
+                    data: form.serialize(),
+                    error:function(){
+                        form.find("button").button("reset");
+                    },
+                    beforeSend:function(){
+                       form.find("button").button("loading");
+                    },
+                    success:function(resp){
+                        var url = $("ul.pagination li.active a").attr("href");
+                        console.log(url);
+                        $.pjax.reload({container:"#list-conversaciones"}); 
+                    },complete:function(jqXHR, textStatus){
+                        form[0].reset();
+                        form.find("button").button("reset");
+                    }
+                });
+                return false;
+            });   
+        
+            $(".more-respuesta").on('click',function(e){
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                var id    = $(this).attr("data-id");
+                var count = $("#respuestas"+id).children().length;
+                $.ajax({
+                    url: $urlMasRespuestas,
+                    type:'post',
+                    dataType:'json',
+                    data: {id:id,count:count},
+                    error:function(){
+                        $.Notification.notify("error","right-bottom","Me Gusta","Algo ocurrio al agregar 'Me Gusta'");
+                    },
+                    beforeSend:function(){
+                       //form.find("button").button("loading");
+                    },
+                    success:function(resp){
+                        $("#respuestas"+resp.id).prepend(resp.data);
+                    },complete:function(jqXHR, textStatus){
+                        //form[0].reset();
+                        //form.find("button").button("reset");
+                    }
+                });
+                return false;
+            }); 
+        
+            $(".like").on('click',function(e){
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                var id = $(this).attr("data-id");
+
+                $.ajax({
+                    url: $urlCreateLike,
+                    type:'post',
+                    dataType:'json',
+                    data: {id:id},
+                    error:function(){
+                        $.Notification.notify("error","right-bottom","Me Gusta","Algo ocurrio al agregar 'Me Gusta'");
+                    },
+                    beforeSend:function(){
+                       //form.find("button").button("loading");
+                    },
+                    success:function(resp){
+                        $("#interraction"+resp.id).html(resp.data);
+                    },complete:function(jqXHR, textStatus){
+                        //form[0].reset();
+                        //form.find("button").button("reset");
+                    }
+                });
+                return false;
+            });  
+        
+        $(".dislike").on('click',function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            var id = $(this).attr("data-id");
+
+            $.ajax({
+                url: $urlDeleteLike,
+                type:'post',
+                dataType:'json',
+                data: {id:id},
+                error:function(){
+                    $.Notification.notify("error","right-bottom","Me Gusta","Algo ocurrio al agregar 'Me Gusta'");
+                },
+                beforeSend:function(){
+                   //form.find("button").button("loading");
+                },
+                success:function(resp){
+                     $("#interraction"+resp.id).html(resp.data);
+                },complete:function(jqXHR, textStatus){
+                    //form[0].reset();
+                    //form.find("button").button("reset");
+                }
+            });
+            return false;
+        }); 
+    });
+        
+        
+    
+        
+     
     
     $("#form-conversacion").on("beforeSubmit",function(e){
         e.preventDefault();

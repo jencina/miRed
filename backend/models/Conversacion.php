@@ -102,4 +102,25 @@ class Conversacion extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Like::className(), ['con_id' => 'con_id']);
     }
+    
+     /** 
+    * @return \yii\db\ActiveQuery 
+    */ 
+   public function getUsus() 
+   { 
+       return $this->hasMany(Usuario::className(), ['usu_id' => 'usu_id'])->viaTable('like', ['con_id' => 'con_id']); 
+   } 
+   
+    public function getLike() 
+    {
+       
+       $user = Like::findOne(['usu_id'=>Yii::$app->user->id,'con_id'=>$this->con_id]);
+
+       if($user){
+           return true;
+       }
+       
+       return false;
+   }
+   
 }
