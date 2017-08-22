@@ -16,9 +16,9 @@ $this->params['tittle'] = 'Bienvenido';
 
 <div id="lista-post" class="col-md-7" >
     <div class="content row"></div>
-    <ul id="pagination" style="display: none">
-        <li class="active"><?= \yii\bootstrap\Html::a('', ['modulo/getpost', 'limit' => 5, 'offset' => 1]); ?></li> 
-    </ul>    
+    <div class="col-md-12">
+        <?= yii\bootstrap\Html::a('Ver Mas',false,['id'=>"more-post"])?>
+    </div>
 </div>
 
 <div class="col-md-5">
@@ -99,11 +99,35 @@ $this->registerJs(<<<JS
         }
     });*/
         
-    function loadPosts(){
-        //var url = $("#pagination li").last().children().attr("href");
+    $("#more-post").on("click",function(e){
+        var offset = $("#lista-post .content").children(".posts").length;
         $.ajax({
             url: $urlGetPost,
             type:'post',
+            data:{offset:offset},
+            //dataType:'json',
+            error:function(){
+                //form.find("button").button("reset");
+            },
+            beforeSend:function(){
+                //form.find("button").button("loading");
+            },
+            success:function(resp){
+                $("#lista-post .content").append(resp);
+            },complete:function(jqXHR, textStatus){
+        
+            }
+        });
+   
+        return false;
+    });    
+        
+    function loadPosts(){
+        var offset = $("#lista-post .content").children().length;
+        $.ajax({
+            url: $urlGetPost,
+            type:'post',
+            data:{offset:offset},
             //dataType:'json',
             error:function(){
                 //form.find("button").button("reset");

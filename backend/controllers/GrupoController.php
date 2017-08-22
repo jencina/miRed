@@ -165,11 +165,47 @@ class GrupoController extends Controller
         $model = new \backend\models\Conversacion();
         
         if ($model->load(Yii::$app->request->post())) {
-            $model->con_fechacreacion     =  date("Y-m-d H:i:s");
-            $model->con_fechamodificacion =  date("Y-m-d H:i:s");
-            $model->usu_id                 =  Yii::$app->user->id;
+            $model->con_fechacreacion      =  date("Y-m-d H:i:s");
+            $model->con_fechamodificacion  =  date("Y-m-d H:i:s");
+            $model->usu_id                 = Yii::$app->user->id;
+            $model->tipo_id                = 1;
             
             if($model->save()){
+                echo json_encode([
+                    'status'=>'save',
+                ]);
+                exit;
+            }
+        }
+        
+        echo json_encode([
+            'status'=>'failed',
+            //'form' => $this->renderAjax('_formUpload',['model'=>$model])
+            ]);
+        exit;
+    }
+    
+    public function actionCreateEncuesta(){
+        
+        $model = new \backend\models\Conversacion();
+        
+        if ($model->load(Yii::$app->request->post())) {            
+            $model->con_fechacreacion      = date("Y-m-d H:i:s");
+            $model->con_fechamodificacion  = date("Y-m-d H:i:s");
+            $model->usu_id                 = Yii::$app->user->id;
+            $model->tipo_id                = 2;
+            
+            if($model->save()){
+                if(isset($_POST['EncuestaRespuesta'])){
+                    foreach ($_POST['EncuestaRespuesta']['nombre'] as $index => $nombre){
+                        $respuesta = new \backend\models\EncuestaRespuesta();
+                        $respuesta->nombre = $nombre;
+                        $respuesta->con_id = $model->con_id;
+                        $respuesta->fechacreacion = date("Y-m-d H:i:s");
+                        $respuesta->insert();
+                    }
+                }
+                
                 echo json_encode([
                     'status'=>'save',
                 ]);
@@ -329,7 +365,9 @@ class GrupoController extends Controller
             
             if($model->save()){
                 echo json_encode([
-                    'status'=>'save',
+                    'status'=> 'save',
+                    'id'    => $model->con_id_padre,
+                    'div'   => $this->renderAjax('_respuesta',['model'=>$model])
                 ]);
                 exit;
             }

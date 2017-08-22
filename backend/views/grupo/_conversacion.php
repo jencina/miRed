@@ -30,14 +30,19 @@ use yii\helpers\Url;
         
         <div id="bg-default<?= $model->con_id; ?>" class="panel-collapse collapse in" aria-expanded="true">
             <div class="portlet-body">
-                <div class="col-md-12">
-                    
-                </div>
                 <dl class="dl-horizontal m-b-10">
-                    <?= $model->con_contenido; ?>
+                    
+                    <?php
+                    switch ($model->tipo_id){
+                        case 1:
+                            echo $model->con_contenido;
+                            break;
+                        case 2:
+                            echo $this->render('_encuesta',['model'=>$model]);
+                            break;
+                    }
+                    ?>
                 </dl>
-               
-
             </div>
             <hr class="m-0">
             <div id="interraction<?= $model->con_id; ?>" class="panel-body p-t-10 p-b-10" style="position:relative;font-size: 13px">

@@ -44,7 +44,7 @@ $this->params['tittle'] = 'Grupo';
                         <?php $autor = $model->usuIdCreate;?>
                         <h4 class="m-b-5"><?= ucwords(strtolower($autor->usu_nombre.' '.$autor->usu_apellido)); ?></h4>
                         <p class="text-muted"><?= $autor->usu_email; ?></p>
-                        <p><?= yii\bootstrap\Html::a('Cambiar',false,['class'=>'btn btn-primary']); ?></p>
+                        
                     </div>
                 </div>
             </div>
