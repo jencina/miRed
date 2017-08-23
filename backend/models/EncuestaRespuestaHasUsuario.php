@@ -7,7 +7,7 @@ use Yii;
 /**
  * This is the model class for table "encuesta_respuesta_has_usuario".
  *
- * @property integer $respuesta_id
+ * @property string $respuesta_id
  * @property string $usu_id
  * @property string $fechacreacion
  *
@@ -33,7 +33,7 @@ class EncuestaRespuestaHasUsuario extends \yii\db\ActiveRecord
             [['respuesta_id', 'usu_id'], 'required'],
             [['respuesta_id', 'usu_id'], 'integer'],
             [['fechacreacion'], 'safe'],
-            [['respuesta_id'], 'exist', 'skipOnError' => true, 'targetClass' => EncuestaRespuesta::className(), 'targetAttribute' => ['respuesta_id' => 'id']],
+            [['respuesta_id'], 'exist', 'skipOnError' => true, 'targetClass' => EncuestaRespuesta::className(), 'targetAttribute' => ['respuesta_id' => 'respuesta_id']],
             [['usu_id'], 'exist', 'skipOnError' => true, 'targetClass' => Usuario::className(), 'targetAttribute' => ['usu_id' => 'usu_id']],
         ];
     }
@@ -55,7 +55,7 @@ class EncuestaRespuestaHasUsuario extends \yii\db\ActiveRecord
      */
     public function getRespuesta()
     {
-        return $this->hasOne(EncuestaRespuesta::className(), ['id' => 'respuesta_id']);
+        return $this->hasOne(EncuestaRespuesta::className(), ['respuesta_id' => 'respuesta_id']);
     }
 
     /**

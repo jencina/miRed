@@ -132,4 +132,19 @@ class Conversacion extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Usuario::className(), ['usu_id' => 'usu_id'])->viaTable('like', ['con_id' => 'con_id']);
     }
+    
+    public function getTieneVoto(){
+        
+       $query = Conversacion::findBySql('select c.* from conversacion c
+        inner join encuesta_respuesta e on e.con_id = c.con_id
+        inner join encuesta_respuesta_has_usuario u on u.respuesta_id = e.respuesta_id
+        where c.con_id= :param1 and u.usu_id= :param2
+        ',[':param1'=>$this->con_id,':param2'=>Yii::$app->user->id])->count();
+        
+       if($query == 1){
+           return true;
+       }else{
+           return false;
+       }
+    }
 }

@@ -7,14 +7,14 @@ use Yii;
 /**
  * This is the model class for table "encuesta_respuesta".
  *
- * @property integer $id
+ * @property string $respuesta_id
  * @property string $nombre
  * @property string $fechacreacion
  * @property string $con_id
  *
  * @property Conversacion $con
  * @property EncuestaRespuestaHasUsuario[] $encuestaRespuestaHasUsuarios
- * @property Usuario[] $usuarioUsus
+ * @property Usuario[] $usus
  */
 class EncuestaRespuesta extends \yii\db\ActiveRecord
 {
@@ -46,7 +46,7 @@ class EncuestaRespuesta extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'respuesta_id' => 'Respuesta ID',
             'nombre' => 'Nombre',
             'fechacreacion' => 'Fechacreacion',
             'con_id' => 'Con ID',
@@ -66,14 +66,14 @@ class EncuestaRespuesta extends \yii\db\ActiveRecord
      */
     public function getEncuestaRespuestaHasUsuarios()
     {
-        return $this->hasMany(EncuestaRespuestaHasUsuario::className(), ['encuesta_respuesta_id' => 'id']);
+        return $this->hasMany(EncuestaRespuestaHasUsuario::className(), ['respuesta_id' => 'respuesta_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUsuarioUsus()
+    public function getUsus()
     {
-        return $this->hasMany(Usuario::className(), ['usu_id' => 'usuario_usu_id'])->viaTable('encuesta_respuesta_has_usuario', ['encuesta_respuesta_id' => 'id']);
+        return $this->hasMany(Usuario::className(), ['usu_id' => 'usu_id'])->viaTable('encuesta_respuesta_has_usuario', ['respuesta_id' => 'respuesta_id']);
     }
 }

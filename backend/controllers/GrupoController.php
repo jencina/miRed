@@ -220,6 +220,20 @@ class GrupoController extends Controller
         exit;
     }
     
+    public function actionVotarEncuesta(){
+        
+        $model = new \backend\models\EncuestaRespuestaHasUsuario();
+        if ($model->load(Yii::$app->request->post())) {       
+            $model->usu_id        = Yii::$app->user->id;
+            $model->fechacreacion = date("Y-m-d H:i:s");
+            
+            if($model->save()){
+                
+                
+            }   
+        }
+    }
+    
     public function actionArchivos($id)
     {        
         $dataProvider = new ActiveDataProvider([

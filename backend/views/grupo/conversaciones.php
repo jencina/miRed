@@ -146,9 +146,11 @@ $this->params['tittle']        = 'Grupo';
 <?php
 $createConversacion   = \yii\helpers\Json::htmlEncode(Url::to(['grupo/createconversacion']));
 $createEncuesta       = \yii\helpers\Json::htmlEncode(Url::to(['grupo/create-encuesta']));
+$votarEncuesta        = \yii\helpers\Json::htmlEncode(Url::to(['grupo/votar-encuesta']));
 
 $createRespuesta      = \yii\helpers\Json::htmlEncode(Url::to(['grupo/create-respuesta']));
 $urlGetConversaciones = \yii\helpers\Json::htmlEncode(Url::to(['grupo/getconversaciones']));
+
 
 $urlMasRespuestas = \yii\helpers\Json::htmlEncode(Url::to(['grupo/mas-respuestas']));
 
@@ -321,6 +323,33 @@ $this->registerJs(<<<JS
         });
         return false;
     });    
+        
+    $("form.votar").on("beforeSubmit",function(e){
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        var form = $(this);
+        $.ajax({
+            url: $votarEncuesta,
+            type:'post',
+            dataType:'json',
+            data: form.serialize(),
+            error:function(){
+                form.find("button").button("reset");
+            },
+            beforeSend:function(){
+               form.find("button").button("loading");
+            },
+            success:function(resp){
+                
+        
+            },complete:function(jqXHR, textStatus){
+                form[0].reset();
+                form.find("button").button("reset");
+            }
+        });
+        return false;
+    });        
         
         
 JS
