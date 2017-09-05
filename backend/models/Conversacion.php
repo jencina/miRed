@@ -147,4 +147,17 @@ class Conversacion extends \yii\db\ActiveRecord
            return false;
        }
     }
+    
+    public function getTotalVotos(){
+        
+       $query = Conversacion::findBySql('select c.* from conversacion c
+        inner join encuesta_respuesta e on e.con_id = c.con_id
+        inner join encuesta_respuesta_has_usuario u on u.respuesta_id = e.respuesta_id
+        where c.con_id= :param1
+        ',[':param1'=>$this->con_id])->count();
+        
+       return $query;
+    }
+    
+    
 }

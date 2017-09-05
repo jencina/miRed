@@ -158,7 +158,7 @@ $urlCreateLike = \yii\helpers\Json::htmlEncode(Url::to(['grupo/create-like']));
 $urlDeleteLike = \yii\helpers\Json::htmlEncode(Url::to(['grupo/delete-like']));
 $this->registerJs(<<<JS
            
-    $(document).on("ajaxComplete ready :pjax-success",function(){
+    $(document).on("ajaxComplete ready",function(){
         
         $("form.respuesta").on("beforeSubmit",function(e){
              e.preventDefault();
@@ -323,34 +323,7 @@ $this->registerJs(<<<JS
         });
         return false;
     });    
-        
-    $("form.votar").on("beforeSubmit",function(e){
-        e.preventDefault();
-        e.stopImmediatePropagation();
-
-        var form = $(this);
-        $.ajax({
-            url: $votarEncuesta,
-            type:'post',
-            dataType:'json',
-            data: form.serialize(),
-            error:function(){
-                form.find("button").button("reset");
-            },
-            beforeSend:function(){
-               form.find("button").button("loading");
-            },
-            success:function(resp){
-                
-        
-            },complete:function(jqXHR, textStatus){
-                form[0].reset();
-                form.find("button").button("reset");
-            }
-        });
-        return false;
-    });        
-        
+          
         
 JS
 );

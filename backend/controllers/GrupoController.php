@@ -223,13 +223,18 @@ class GrupoController extends Controller
     public function actionVotarEncuesta(){
         
         $model = new \backend\models\EncuestaRespuestaHasUsuario();
-        if ($model->load(Yii::$app->request->post())) {       
+        if ($model->load(Yii::$app->request->post())) {      
+            
             $model->usu_id        = Yii::$app->user->id;
             $model->fechacreacion = date("Y-m-d H:i:s");
+            $model->validate();
             
             if($model->save()){
-                
-                
+                $conversacion = \backend\models\Conversacion::findOne(['con_id'=>$model->respuesta->con_id]);
+                echo json_encode([
+                    'id'  => $conversacion->con_id,
+                    'div' => $this->renderAjax('_encuesta',['model'=>$conversacion])
+                ]);
             }   
         }
     }
