@@ -124,6 +124,18 @@ class Conversacion extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Like::className(), ['con_id' => 'con_id']);
     }
+    
+    public function getLikeUsu()
+    {
+        $query = Like::find()->where(['con_id'=>$this->con_id,'usu_id'=>Yii::$app->user->id])->count();
+               
+        
+        if($query == 1){
+           return true;
+        }else{
+           return false;
+        }
+    }
 
     /**
      * @return \yii\db\ActiveQuery
