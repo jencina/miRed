@@ -36,7 +36,7 @@ AdminAsset::register($this);
                 <!-- LOGO -->
                 <div class="topbar-left">
                     <div class="text-center">
-                        <a href="index.html" class="logo"><i class="md md-equalizer"></i> <span>Minton</span> </a>
+                        <?= \yii\bootstrap\Html::a('<i class="md md-equalizer"></i> <span>MI-RED</span>',['usuario/index'],['class'=>'logo'])?>
                     </div>
                 </div>
 
@@ -211,7 +211,7 @@ AdminAsset::register($this);
             <!-- end content -->
 
             <footer class="footer text-right">
-                2016 © Minton.
+                <?= date("Y")?> © MIRED.
             </footer>
 
         </div>
