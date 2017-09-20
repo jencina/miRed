@@ -18,8 +18,12 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-md-10">
                 <div class="progress progress-lg m-b-5" style="height: auto !important;">
-                    <div class="progress-bar progress-bar-purple progress-animated animated" role="progressbar" aria-valuenow="<?= $porcen;?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $porcen;?>%;padding: 3px 0;">
-                        <?= $respuesta->nombre;?>
+                    <div class="progress-bar progress-bar-info progress-animated animated" role="progressbar" aria-valuenow="<?= $porcen;?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $porcen;?>%;padding: 3px 0;min-height: 25px;position: relative;">
+                        <span class="text-inverse" style="position: absolute;
+                            width: 100%;
+                            left: 0;
+                            text-align: left;
+                            padding-left: 10px;"><?= $respuesta->nombre;?></span>
                     </div>
                 </div>
             </div>
