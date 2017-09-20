@@ -33,7 +33,8 @@ class EncuestaRespuesta extends \yii\db\ActiveRecord
     {
         return [
             [['fechacreacion'], 'safe'],
-            [['con_id'], 'required'],
+            [['nombre'], 'required','message'=>'Respuesta no puede estar vacío.'],
+            //[['con_id'], 'required'],
             [['con_id'], 'integer'],
             [['nombre'], 'string', 'max' => 45],
             [['con_id'], 'exist', 'skipOnError' => true, 'targetClass' => Conversacion::className(), 'targetAttribute' => ['con_id' => 'con_id']],

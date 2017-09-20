@@ -45,7 +45,8 @@ $this->params['tittle']        = 'Grupo';
 
                     <div class="tab-pane active " id="home-12" style="display: block;">
                         <?php $form = ActiveForm::begin(['id' => 'form-conversacion']); ?>
-                        <div class="panel-body">               
+                        <?php  $conversacion->scenario = 'conversacion-create';?>
+                        <div class="panel-body">  
                             <?= $form->field($conversacion, 'con_contenido', ['options' => ['class' => '']])->textarea(['maxlength' => true, 'placeholder' => 'Iniciar Conversacion...'])->label(false) ?>                
                             <?= $form->field($conversacion, 'grupo_id')->hiddenInput()->label(false) ?> 
                         </div>
@@ -57,27 +58,7 @@ $this->params['tittle']        = 'Grupo';
                     </div>
 
                     <div class="tab-pane" id="profile-12" style="display: none;">
-                        
-                        <?php 
-                        $respuesta = new \backend\models\EncuestaRespuesta();
-                        $form = ActiveForm::begin(['id' => 'form-encuesta']); ?>
-                        
-                        <div class="panel-body">               
-                            <?= $form->field($encuesta, 'con_contenido', ['options' => ['class' => '']])->textInput(['maxlength' => 50, 'placeholder' => 'Pregunta?'])->label(false) ?>                
-                            <?= $form->field($encuesta, 'grupo_id')->hiddenInput()->label(false) ?> 
-                            
-                            
-                            <?= $form->field($respuesta, 'nombre[]', ['options' => ['class' => '']])->textInput(['maxlength' => 50, 'placeholder' => 'Respuesta'])->label(false) ?> 
-                            <?= $form->field($respuesta, 'nombre[]', ['options' => ['class' => '']])->textInput(['maxlength' => 50, 'placeholder' => 'Respuesta'])->label(false) ?> 
-                            <?= $form->field($respuesta, 'nombre[]', ['options' => ['class' => '']])->textInput(['maxlength' => 50, 'placeholder' => 'Respuesta'])->label(false) ?> 
-                            
-                        </div>
-                        
-                        <div class="panel-footer">
-                            <?= Html::submitButton('Publicar', ['id' => 'btn-guardar', 'class' => $encuesta->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-                        </div>
-                        
-                        <?php ActiveForm::end(); ?>   
+                        <?= $this->render('_encuestaForm',['encuesta'=>$encuesta]);?>
                     </div>
                 </div>
             </div>
@@ -145,9 +126,10 @@ $this->params['tittle']        = 'Grupo';
 
 <?php
 $createConversacion   = \yii\helpers\Json::htmlEncode(Url::to(['grupo/createconversacion']));
-$createEncuesta       = \yii\helpers\Json::htmlEncode(Url::to(['grupo/create-encuesta']));
+
 $votarEncuesta        = \yii\helpers\Json::htmlEncode(Url::to(['grupo/votar-encuesta']));
 
+$addRespuesta         = \yii\helpers\Json::htmlEncode(Url::to(['grupo/add-respuesta']));
 $createRespuesta      = \yii\helpers\Json::htmlEncode(Url::to(['grupo/create-respuesta']));
 $urlGetConversaciones = \yii\helpers\Json::htmlEncode(Url::to(['grupo/getconversaciones']));
 
@@ -156,9 +138,36 @@ $urlMasRespuestas = \yii\helpers\Json::htmlEncode(Url::to(['grupo/mas-respuestas
 
 $urlCreateLike = \yii\helpers\Json::htmlEncode(Url::to(['grupo/create-like']));
 $urlDeleteLike = \yii\helpers\Json::htmlEncode(Url::to(['grupo/delete-like']));
+
 $this->registerJs(<<<JS
            
     $(document).on("ajaxComplete ready",function(){
+        
+        $("#add-respuesta").on('click',function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            var i   = $(".respuesta-count").last().val();
+       
+            $.ajax({
+                url: $addRespuesta,
+                type:'post',
+                dataType:'json',
+                data: {i:i},
+                error:function(){
+                    $.Notification.notify("error","right-bottom","Me Gusta","Algo ocurrio al agregar respuesta");
+                },
+                beforeSend:function(){
+                    $("#add-respuesta").button("loading");
+                },
+                success:function(resp){
+                    $("#form-encuesta .respuesta-content").append(resp.data);
+                },complete:function(jqXHR, textStatus){
+                    $("#add-respuesta").button("reset");
+                }
+            });
+            return false;
+        });
         
         $("form.respuesta").on("beforeSubmit",function(e){
              e.preventDefault();
@@ -298,31 +307,6 @@ $this->registerJs(<<<JS
         return false;
     });
         
-    $("#form-encuesta").on("beforeSubmit",function(e){
-        e.preventDefault();
-        e.stopImmediatePropagation();
-
-        var form = $(this);
-        $.ajax({
-            url: $createEncuesta,
-            type:'post',
-            dataType:'json',
-            data: form.serialize(),
-            error:function(){
-                form.find("button").button("reset");
-            },
-            beforeSend:function(){
-               form.find("button").button("loading");
-            },
-            success:function(resp){
-                 $.pjax.reload({container:"#list-conversaciones"}); 
-            },complete:function(jqXHR, textStatus){
-                form[0].reset();
-                form.find("button").button("reset");
-            }
-        });
-        return false;
-    });    
           
         
 JS

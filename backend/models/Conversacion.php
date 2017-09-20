@@ -41,9 +41,14 @@ class Conversacion extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['con_contenido'], 'required','on'=>'conversacion-create','message'=>'Conversacion no puede estar vacío.'],
+            [['con_contenido'], 'required','on'=>'encuesta-create','message'=>'Pregunta no puede estar vacío.'],
+            [['grupo_id'], 'required'],
+            
+            
             [['con_fechacreacion', 'con_fechamodificacion'], 'safe'],
             [['con_contenido'], 'string'],
-            [['grupo_id','con_contenido'], 'required'],
+
             [['grupo_id', 'usu_id', 'con_id_padre', 'tipo_id'], 'integer'],
             [['con_id_padre'], 'exist', 'skipOnError' => true, 'targetClass' => Conversacion::className(), 'targetAttribute' => ['con_id_padre' => 'con_id']],
             [['tipo_id'], 'exist', 'skipOnError' => true, 'targetClass' => ConversacionTipo::className(), 'targetAttribute' => ['tipo_id' => 'tipo_id']],
@@ -60,8 +65,8 @@ class Conversacion extends \yii\db\ActiveRecord
         return [
             'con_id' => 'Con ID',
             'con_fechacreacion' => 'Con Fechacreacion',
-            'con_fechamodificacion' => 'Con Fechamodificacion',
-            'con_contenido' => 'Con Contenido',
+            'con_fechamodificacion' => 'Fecha modificacion',
+            'con_contenido' => 'Contenido',
             'grupo_id' => 'Grupo ID',
             'usu_id' => 'Usu ID',
             'con_id_padre' => 'Con Id Padre',

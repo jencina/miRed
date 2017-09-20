@@ -188,34 +188,57 @@ class GrupoController extends Controller
     public function actionCreateEncuesta(){
         
         $model = new \backend\models\Conversacion();
+        $model->scenario = 'encuesta-create';
         
-        if ($model->load(Yii::$app->request->post())) {            
+        $respuestas = [];
+        if ($model->load(Yii::$app->request->post())) {
+            
+            $validate = true;
             $model->con_fechacreacion      = date("Y-m-d H:i:s");
             $model->con_fechamodificacion  = date("Y-m-d H:i:s");
             $model->usu_id                 = Yii::$app->user->id;
             $model->tipo_id                = 2;
             
-            if($model->save()){
-                if(isset($_POST['EncuestaRespuesta'])){
-                    foreach ($_POST['EncuestaRespuesta']['nombre'] as $index => $nombre){
-                        $respuesta = new \backend\models\EncuestaRespuesta();
-                        $respuesta->nombre = $nombre;
-                        $respuesta->con_id = $model->con_id;
-                        $respuesta->fechacreacion = date("Y-m-d H:i:s");
-                        $respuesta->insert();
-                    }
+            $validate = $validate && $model->validate();
+            
+            if(isset($_POST['EncuestaRespuesta'])){
+                foreach ($_POST['EncuestaRespuesta'] as $index => $nombre){
+                    $respuesta = new \backend\models\EncuestaRespuesta();
+                    $respuesta->nombre = $nombre['nombre'];
+                    $valid = $respuesta->validate();
+                    $validate = $validate && $valid;
+                    $respuestas[] = $respuesta;
                 }
-                
-                echo json_encode([
-                    'status'=>'save',
-                ]);
-                exit;
+            }
+                                    
+            if($validate){
+                if($model->save()){
+                    if(isset($_POST['EncuestaRespuesta'])){
+                        foreach ($_POST['EncuestaRespuesta'] as $index => $nombre){
+                            $respuesta = new \backend\models\EncuestaRespuesta();
+                            $respuesta->nombre = $nombre['nombre'];
+                            $respuesta->con_id = $model->con_id;
+                            $respuesta->fechacreacion = date("Y-m-d H:i:s");
+                            $respuesta->insert();
+                        }
+                    }
+                    
+                    $mod = new \backend\models\Conversacion();
+                    $mod->scenario = 'encuesta-create';
+                    $mod->grupo_id = $model->grupo_id;
+
+                    echo json_encode([
+                        'status'=>'save',
+                        'form' => $this->renderAjax('_encuestaForm',['encuesta'=>$mod])
+                    ]);
+                    exit;
+                } 
             }
         }
         
         echo json_encode([
             'status'=>'failed',
-            //'form' => $this->renderAjax('_formUpload',['model'=>$model])
+            'form' => $this->renderAjax('_encuestaForm',['encuesta'=>$model,'respuestas'=>$respuestas])
             ]);
         exit;
     }
@@ -371,6 +394,22 @@ class GrupoController extends Controller
                 'id' =>$id
             ]);
         }
+    }
+    
+    public function actionAddRespuesta(){
+        
+        if(Yii::$app->request->isAjax){
+            $model = new \backend\models\EncuestaRespuesta();
+            $form  = new \yii\bootstrap\ActiveForm();
+            
+            $i     = Yii::$app->request->post('i');
+            $i++;
+            echo json_encode([
+                'status'=>'success',
+                'data' => $this->renderAjax('_respuestaInput',['respuesta'=>$model,'form'=>$form,'i'=>$i])
+                ]);
+            exit;
+        }        
     }
     
     public function actionCreateRespuesta(){
