@@ -10,7 +10,10 @@ use yii\widgets\ListView;
 /* @var $model backend\models\Grupo */
 
 $this->title = 'Update Grupo: ' . $model->grupo_id;
+
 $this->params['grupo']  = $model->grupo_id;
+$this->params['grupo-model']  = $model;
+
 $this->params['breadcrumbs'][] = ['label' => 'Grupos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', ucwords(strtolower($model->grupo_nombre))), 'url' => ['view', 'id' => $model->grupo_id]];
 $this->params['breadcrumbs'][] = 'Configuracion';
